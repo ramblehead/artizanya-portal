@@ -9,6 +9,9 @@ const HERO_QUERY = gql`
     hero(episode: $episode) {
       name
       id
+      appearsIn {
+        title
+      }
       friends {
         name
         id
@@ -50,10 +53,11 @@ class Character extends React.Component<ChildProps<InputProps, Response>, {}> {
     const data = this.props.data!;
     const { loading, error } = data;
 
-    if (loading) return <div>Loading</div>;
-    if (error) return <div>Error</div>;
+    if (loading) { return <div>Loading</div>; }
+    if (error) { return <div>Error</div>; }
 
     const hero = data.hero!;
+    console.log(hero);
 
     return <div>{hero.name}</div>;
   }
