@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "lib": [
+      "es2017",
+      "esnext.asynciterable"
+    ],
+    "moduleResolution": "node",
+    // "allowSyntheticDefaultImports": true,
+    // "noEmit": true,
+    "newLine": "lf",
+    "sourceMap": true,
+    // "inlineSourceMap": true,
+    // "inlineSources": true
+    // "watch": true
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+  }
+}
