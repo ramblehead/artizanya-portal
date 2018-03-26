@@ -4,9 +4,10 @@ import * as path from 'path';
 import * as fs from 'mz/fs';
 
 function flatten(arr: any[]): any[] {
-  return arr.reduce(
-    (flat: any[], toFlatten: any[]) => flat.concat(
-      Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten), []);
+  return arr.reduce<any[]>(
+    (flat: any, toFlatten: any) =>
+      flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten),
+    []);
 }
 
 async function readdir(dirPath: string): Promise<string[]> {
