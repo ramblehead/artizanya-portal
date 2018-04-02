@@ -39,8 +39,8 @@ async function compileGraphql(file: string) {
   const fileBase = path.basename(file, path.extname(file));
   const filePath = path.dirname(file);
   const jsonFile = path.join(filePath, fileBase + '.js');
-  /a/.
 
+  console.log(jsonFile);
   await fs.writeFile(jsonFile, jsonString);
 }
 
@@ -60,3 +60,26 @@ main().catch(console.error);
 //     graphqlFiles(files).forEach(file => console.log(file));
 //   })
 //   .catch(console.error);
+
+
+graphqlString = `query GetCharacter($episode: String!) {
+  hero(episode: $episode) {
+    name
+    id
+    appearsIn {
+      title
+    }
+    friends {
+      name
+      id
+      appearsIn {
+        title
+      }
+    }
+  }
+}
+`;
+
+// query, fragment or mutation with parameters
+let regex = /\s*(?:query|mutation)[\s\n\r]+(.+)\([^]*?{[^]*}/
+regex.exec(graphqlString);
