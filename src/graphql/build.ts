@@ -62,24 +62,24 @@ main().catch(console.error);
 //   .catch(console.error);
 
 
-graphqlString = `query GetCharacter($episode: String!) {
-  hero(episode: $episode) {
-    name
-    id
-    appearsIn {
-      title
-    }
-    friends {
-      name
-      id
-      appearsIn {
-        title
-      }
-    }
-  }
-}
-`;
+// graphqlString = `query GetCharacter($episode: String!) {
+//   hero(episode: $episode) {
+//     name
+//     id
+//     appearsIn {
+//       title
+//     }
+//     friends {
+//       name
+//       id
+//       appearsIn {
+//         title
+//       }
+//     }
+//   }
+// }
+// `;
 
 // query, fragment or mutation with parameters
-let regex = /\s*(?:query|mutation)[\s\n\r]+(.+)\([^]*?{[^]*}/
-regex.exec(graphqlString);
+// let regex = /\s*(?:query|mutation)[\s\n\r]+(.+)\([^]*?{[^]*}/
+// regex.exec(graphqlString);
