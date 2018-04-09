@@ -3,8 +3,9 @@
 import * as path from 'path';
 import * as fs from 'mz/fs';
 
+import * as XRegExp from 'xregexp';
 import gql from 'graphql-tag';
-import { X_OK } from 'constants';
+import { start } from 'repl';
 
 function flatten(arr: any[]): any[] {
   return arr.reduce(
@@ -63,7 +64,7 @@ main().catch(console.error);
 //   .catch(console.error);
 
 
-graphqlString = `fragment Friends on Character {
+const graphqlString = `fragment Friends on Character {
   friends {
     name
   }
@@ -92,6 +93,29 @@ query GetHuman($id: String!) {
 }
 `;
 
+declare namespace XRegExp {
+  function matchRecursive(
+    str: string,
+    left: string,
+    right: string,
+    flags: string,
+    options: {
+      valueNames: string[],
+      escapeChar?: string
+    }): { name: string, value: string, start: number, end: number }[];
+}
+
+const ms = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
+  valueNames: ['between', 'left', 'match', 'right']
+});
+
+let graphqlOps: string[] = [];
+
+for(let i = 0; i < ms.length; ++i) {
+  if(ms[i].name == 'between') {
+    let graphqlOp = ms[i].value;
+  }
+}
 
 // see https://stackoverflow.com/questions/546433/regular-expression-to-match-outer-brackets
 // and http://xregexp.com/
