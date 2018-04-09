@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fs from 'mz/fs';
 
 import gql from 'graphql-tag';
+import { X_OK } from 'constants';
 
 function flatten(arr: any[]): any[] {
   return arr.reduce(
@@ -62,24 +63,39 @@ main().catch(console.error);
 //   .catch(console.error);
 
 
-// graphqlString = `query GetCharacter($episode: String!) {
-//   hero(episode: $episode) {
-//     name
-//     id
-//     appearsIn {
-//       title
-//     }
-//     friends {
-//       name
-//       id
-//       appearsIn {
-//         title
-//       }
-//     }
-//   }
-// }
-// `;
+graphqlString = `fragment Friends on Character {
+  friends {
+    name
+  }
+}
+
+fragment AppearsIn on Character {
+  appearsIn {
+    title
+  }
+}
+
+query GetCharacter($episode: String!) {
+  hero(episode: $episode) {
+    name
+    id
+    ...AppearsIn
+    ...Friends
+  }
+}
+
+query GetHuman($id: String!) {
+  human(id: $id) {
+    name
+    ...Friends
+  }
+}
+`;
+
+
+// see https://stackoverflow.com/questions/546433/regular-expression-to-match-outer-brackets
+// and http://xregexp.com/
 
 // query, fragment or mutation with parameters
-// let regex = /\s*(?:query|mutation)[\s\n\r]+(.+)\([^]*?{[^]*}/
+// let regex = /\s*(?:query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{[^]*}/
 // regex.exec(graphqlString);
