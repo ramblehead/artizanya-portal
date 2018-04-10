@@ -5,7 +5,6 @@ import * as fs from 'mz/fs';
 
 import * as XRegExp from 'xregexp';
 import gql from 'graphql-tag';
-import { start } from 'repl';
 
 function flatten(arr: any[]): any[] {
   return arr.reduce(
@@ -93,7 +92,7 @@ query GetHuman($id: String!) {
 }
 `;
 
-declare namespace XRegExp {
+declare module 'xregexp' {
   function matchRecursive(
     str: string,
     left: string,
@@ -105,16 +104,22 @@ declare namespace XRegExp {
     }): { name: string, value: string, start: number, end: number }[];
 }
 
-const ms = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
+const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
   valueNames: ['between', 'left', 'match', 'right']
 });
 
 let graphqlOps: string[] = [];
 
-for(let i = 0; i < ms.length; ++i) {
-  if(ms[i].name == 'between') {
-    let graphqlOp = ms[i].value;
+for(let i = 0; i < mr.length; ++i) {
+  let graphqlOp = '';
+  if(mr[i].name === 'between') {
+    graphqlOp = mr[i++].value.trim();        // [graphql operation]
+    if(graphqlOp === '') continue;
+    graphqlOp += ' ' + mr[i++].value.trim(); // {
+    graphqlOp += mr[i++].value;              // [graphql body]
+    graphqlOp += mr[i].value.trim();         // }
   }
+  if(graphqlOp) graphqlOps.push(graphqlOp);
 }
 
 // see https://stackoverflow.com/questions/546433/regular-expression-to-match-outer-brackets
