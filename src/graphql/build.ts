@@ -3,6 +3,7 @@
 import * as path from 'path';
 import * as fs from 'mz/fs';
 
+// XRegExp = require('xregexp')
 import * as XRegExp from 'xregexp';
 import gql from 'graphql-tag';
 
@@ -110,6 +111,9 @@ const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
 
 let graphqlOps: string[] = [];
 
+// see https://stackoverflow.com/questions/546433/regular-expression-to-match-outer-brackets
+// and http://xregexp.com/
+
 for(let i = 0; i < mr.length; ++i) {
   let graphqlOp = '';
   if(mr[i].name === 'between') {
@@ -122,8 +126,12 @@ for(let i = 0; i < mr.length; ++i) {
   if(graphqlOp) graphqlOps.push(graphqlOp);
 }
 
-// see https://stackoverflow.com/questions/546433/regular-expression-to-match-outer-brackets
-// and http://xregexp.com/
+// graphqlOps.map(op => {
+//   let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
+//   let m = regExp.exec(op);
+// });
+
+//   /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/.exec(graphqlOps[2]);
 
 // query, fragment or mutation with parameters
 // let regex = /\s*(?:query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{[^]*}/
