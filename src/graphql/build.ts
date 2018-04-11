@@ -126,10 +126,27 @@ for(let i = 0; i < mr.length; ++i) {
   if(graphqlOp) graphqlOps.push(graphqlOp);
 }
 
-// graphqlOps.map(op => {
-//   let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
-//   let m = regExp.exec(op);
-// });
+graphqlOps.reduce((result: string[], op: string) => {
+  let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
+  let m = regExp.exec(op);
+  if(m) result.push(op);
+  return result;
+}, []);
+
+
+
+graphqlOps.reduce((result, op) => {
+  let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
+  let m = regExp.exec(op);
+  if(m) {
+    let name = m[2] + m[1].charAt(0).toUpperCase() + m[1].slice(1);
+    result.push({
+      name,
+      graphqlOp: op
+    });
+  }
+  return result;
+}, []);
 
 //   /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/.exec(graphqlOps[2]);
 
