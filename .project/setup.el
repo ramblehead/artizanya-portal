@@ -17,5 +17,5 @@
     (setq file-rpath (file-relative-name buffer-file-name project-root))
     (cond ((string-match-p "\\.ts\\'\\|\\.tsx\\'" file-rpath)
            (rh-typescript-setup))
-          ((string-match-p "\\.js\\'\\|/compile\\'" file-rpath)
+          ((string-match-p "\\.js\\'" file-rpath)
            (rh-javascript-setup)))))
