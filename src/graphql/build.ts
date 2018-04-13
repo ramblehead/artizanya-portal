@@ -134,6 +134,18 @@ graphqlOps.reduce((result: string[], op: string) => {
 }, []);
 
 
+function graphqlFragments(op) {
+  let result = [];
+  let regExp = /\.\.\.[\s\n\r]*(\S+)/g;
+  let m = regExp.exec(op);
+  while(m) {
+    result.push(m[1]);
+    m = regExp.exec(op);
+  }
+  return result;
+}
+
+
 
 graphqlOps.reduce((result, op) => {
   let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
