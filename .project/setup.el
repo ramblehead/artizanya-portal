@@ -9,8 +9,6 @@
 (set (make-local-variable 'flycheck-typescript-tslint-executable)
      (concat (rh-project-get-root) "node_modules/.bin/tslint"))
 
-(set (make-local-variable 'rh-tern-argument-hints-enabled) nil)
-
 (let ((project-root (rh-project-get-root))
       file-rpath)
   (when project-root

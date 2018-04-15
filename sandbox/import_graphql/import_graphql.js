@@ -64,7 +64,7 @@ let graphqlFOps = graphqlOps.reduce((result, op) => {
   return result;
 }, []);
 
-function graphqlFragments(op) {
+function usedGraphqlFragments(op) {
   let result = [];
   let regExp = /\.\.\.[\s\n\r]*(\S+)/g;
   let m = regExp.exec(op);
@@ -83,7 +83,7 @@ let ops = graphqlOps.reduce((result, op) => {
     result.push({
       name,
       graphqlOp: op,
-      fragments: graphqlFragments(op)
+      fragments: usedGraphqlFragments(op)
     });
   }
   return result;

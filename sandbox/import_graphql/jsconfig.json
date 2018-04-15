@@ -12,7 +12,8 @@
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
     "noUnusedLocals": true
   }
 }
