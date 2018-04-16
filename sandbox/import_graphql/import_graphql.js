@@ -53,16 +53,26 @@ for(let i = 0; i < mr.length; ++i) {
 let graphqlQmOps = graphqlOps.reduce((result, op) => {
   let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
   let m = regExp.exec(op);
-  if(m) result.push(op);
+  if(m) {
+    let name = m[2] + m[1].charAt(0).toUpperCase() + m[1].slice(1);
+    result.push({
+      name,
+      graphqlOp: op,
+      fragments: usedGraphqlFragments(op)
+    });
+  }
   return result;
 }, []);
 
 let graphqlFOps = graphqlOps.reduce((result, op) => {
   let regExp = /\s*(fragment)[\s\n\r]+(\S+)\s+on\s+(\S+)\s*\{/;
   let m = regExp.exec(op);
-  if(m) result.push(op);
+  if(m) {
+    let fragmentName = m[2];
+    result[fragmentName] = op;
+  }
   return result;
-}, []);
+}, {});
 
 function usedGraphqlFragments(op) {
   let result = [];
@@ -74,20 +84,6 @@ function usedGraphqlFragments(op) {
   }
   return result;
 }
-
-let ops = graphqlOps.reduce((result, op) => {
-  let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
-  let m = regExp.exec(op);
-  if(m) {
-    let name = m[2] + m[1].charAt(0).toUpperCase() + m[1].slice(1);
-    result.push({
-      name,
-      graphqlOp: op,
-      fragments: usedGraphqlFragments(op)
-    });
-  }
-  return result;
-}, []);
 
 //   /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/.exec(graphqlOps[2]);
 
