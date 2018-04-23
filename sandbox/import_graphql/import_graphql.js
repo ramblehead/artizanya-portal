@@ -32,57 +32,74 @@ query GetHuman($id: String!) {
 }
 `;
 
-const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
-  valueNames: ['between', 'left', 'match', 'right']
-});
+function extractBlocks(graphqlString) {
+  const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
+    valueNames: ['between', 'left', 'match', 'right']
+  });
 
-let graphqlOps = [];
+  let blocks = [];
 
-for(let i = 0; i < mr.length; ++i) {
-  let graphqlOp = '';
-  if(mr[i].name === 'between') {
-    graphqlOp = mr[i++].value.trim();        // [graphql operation]
-    if(graphqlOp === '') continue;
-    graphqlOp += ' ' + mr[i++].value.trim(); // {
-    graphqlOp += mr[i++].value;              // [graphql body]
-    graphqlOp += mr[i].value.trim();         // }
+  for(let i = 0; i < mr.length; ++i) {
+    let block = '';
+    if(mr[i].name === 'between') {
+      block = mr[i++].value.trim();        // [graphql operation]
+      if(block === '') continue;
+      block += ' ' + mr[i++].value.trim(); // {
+      block += mr[i++].value;              // [graphql body]
+      block += mr[i].value.trim();         // }
+    }
+    if(block) blocks.push(block);
   }
-  if(graphqlOp) graphqlOps.push(graphqlOp);
+
+  return blocks;
 }
 
-let graphqlQmOps = graphqlOps.reduce((result, op) => {
-  let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
-  let m = regExp.exec(op);
-  if(m) {
-    let name = m[2] + m[1].charAt(0).toUpperCase() + m[1].slice(1);
-    result.push({
-      name,
-      graphqlOp: op,
-      fragments: usedGraphqlFragments(op)
-    });
-  }
-  return result;
-}, []);
+function extractOperations(blocks) {
+  return blocks.reduce((result, operation) => {
+    let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
+    let m = regExp.exec(operation);
+    if(m) {
+      let name = m[2] + m[1].charAt(0).toUpperCase() + m[1].slice(1);
+      result.push({
+        name,
+        operation: operation,
+        fragmentNames: findFragmentNames(operation)
+      });
+    }
+    return result;
+  }, []);
+}
 
-let graphqlFOps = graphqlOps.reduce((result, op) => {
-  let regExp = /\s*(fragment)[\s\n\r]+(\S+)\s+on\s+(\S+)\s*\{/;
-  let m = regExp.exec(op);
-  if(m) {
-    let fragmentName = m[2];
-    result[fragmentName] = op;
-  }
-  return result;
-}, {});
-
-function usedGraphqlFragments(op) {
+function findFragmentNames(operation) {
   let result = [];
   let regExp = /\.\.\.[\s\n\r]*(\S+)/g;
-  let m = regExp.exec(op);
+  let m = regExp.exec(operation);
   while(m) {
     result.push(m[1]);
-    m = regExp.exec(op);
+    m = regExp.exec(operation);
   }
   return result;
+}
+
+function extractFragments(blocks) {
+  return blocks.reduce((result, operation) => {
+    let regExp = /\s*(fragment)[\s\n\r]+(\S+)\s+on\s+(\S+)\s*\{/;
+    let m = regExp.exec(operation);
+    if(m) {
+      let fragmentName = m[2];
+      result[fragmentName] = operation;
+    }
+    return result;
+  }, {});
+}
+
+function makeGqlDefinitions(operations, fragments) {
+}
+
+function parseGqlDefinitions(strings) {
+}
+
+function generateJsonDefinitions(objects) {
 }
 
 //   /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/.exec(graphqlOps[2]);
