@@ -1,7 +1,10 @@
 // Hey Emacs, this is -*- coding: utf-8 -*-
 /* global require */
 
+const fs = require('mz/fs');
+
 const XRegExp = require('xregexp');
+const { gql } = require('graphql-tag');
 
 const graphqlString = `fragment Friends on Character {
   friends {
@@ -62,7 +65,7 @@ function extractOperations(blocks) {
       let name = m[2] + m[1].charAt(0).toUpperCase() + m[1].slice(1);
       result.push({
         name,
-        operation: operation,
+        definition: operation,
         fragmentNames: findFragmentNames(operation)
       });
     }
@@ -93,17 +96,48 @@ function extractFragments(blocks) {
   }, {});
 }
 
-function makeGqlDefinitions(operations, fragments) {
+function makeGqlStrings(operations, fragments) {
+  return operations.map(operation => {
+    let gqlString = operation.definition + "\n";
+    for(let fragmentName of operation.fragmentNames) {
+      gqlString += "\n" + fragments[fragmentName] + "\n";
+    }
+    return {
+      name: operation.name,
+      value: gqlString
+    };
+  });
 }
 
-function parseGqlDefinitions(strings) {
+function makeGqlObjects(gqlStrings) {
+  return gqlStrings.map(gqlString => ({
+    name: gqlString.name,
+    value: gql(gqlString.value)
+  }));
 }
 
-function generateJsonDefinitions(objects) {
+function makeJsonStrings(gqlObjects) {
+  return gqlObjects.map(gqlObject => ({
+    name: gqlObject.name,
+    value: JSON.stringify(gqlObject.value, null, 2)
+  }));
 }
 
-//   /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/.exec(graphqlOps[2]);
+function writeJsFile(fileName, jsonStrings) {
+  const fstream = fs.createWriteStream(fileName);
+  fstream.write('// Hey Emacs, this is -*- coding: utf-8 -*-\n');
+  for(let jsonString of jsonStrings) {
+    fstream.write('\nexports.' + jsonString.name + ' = ');
+    fstream.write(jsonString.value);
+    fstream.write(';\n');
+  }
+}
 
-// query, fragment or mutation with parameters
-// let regex = /\s*(?:query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{[^]*}/
-// regex.exec(graphqlString);
+let blocks = extractBlocks(graphqlString);
+let operations = extractOperations(blocks);
+let fragments = extractFragments(blocks);
+let gqlStrings = makeGqlStrings(operations, fragments);
+let gqlObjects = makeGqlObjects(gqlStrings);
+let jsonStrings = makeJsonStrings(gqlObjects);
+writeJsFile("operations.js", jsonStrings);
+
