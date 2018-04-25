@@ -36,7 +36,6 @@ query GetHuman($id: String!) {
 `;
 
 class GraphqlCompiler {
-
   constructor(fileName) {
     this.inFileName = fileName;
     this.graphqlString = graphqlString;

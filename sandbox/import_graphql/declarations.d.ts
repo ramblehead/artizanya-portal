@@ -11,3 +11,8 @@ declare module 'xregexp' {
       escapeChar?: string
     }): { name: string, value: string, start: number, end: number }[];
 }
+
+declare module 'graphql-tag' {
+  function gql(literals: any, ...placeholders: any[]): any;
+  export = gql;
+}
