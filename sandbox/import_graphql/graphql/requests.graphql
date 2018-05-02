@@ -1,0 +1,27 @@
+fragment Friends on Character {
+  friends {
+    name
+  }
+}
+
+fragment AppearsIn on Character {
+  appearsIn {
+    title
+  }
+}
+
+query GetCharacter($episode: String!) {
+  hero(episode: $episode) {
+    name
+    id
+    ...AppearsIn
+    ...Friends
+  }
+}
+
+query GetHuman($id: String!) {
+  human(id: $id) {
+    name
+    ...Friends
+  }
+}
