@@ -7,71 +7,47 @@ const fs = require('mz/fs');
 const XRegExp = require('xregexp');
 const gql = require('graphql-tag');
 
-exports.compileDir = compileDir;
-exports.compileFile = compileFile;
-
-function compileDir(dirPath) {
-  const files = readdir(dirPath);
-  const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
-    if(/\.graphql$/.test(fileToCheck)) return graphqlFiles.concat(fileToCheck);
-    return graphqlFiles;
-  }, []);
-  graphqlFiles.forEach(file => compileFile(file));
-}
-
-function compileFile(filePath) {
-  const outFilePath = filePath.replace(/(\.graphql)$/, ".js");
-  const graphqlString = fs.readFileSync(filePath, "utf8");
-  const blocks = extractBlocks(graphqlString);
-  const operations = filterOperations(blocks);
-  const fragments = filterFragments(blocks);
-  const gqlStrings = makeGqlStrings(operations, fragments);
-  const gqlObjects = makeGqlObjects(gqlStrings);
-  const jsonStrings = makeJsonStrings(gqlObjects);
-  writeJsFile(outFilePath, jsonStrings);
-}
-
-function flatten(arr) {
-  return arr.reduce(
+function flatten(array) {
+  return array.reduce(
     (flat, toFlatten) =>
       flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten),
     []);
 }
 
-function readdir(dirPath) {
+function readdirRecursiveSync(dirPath) {
   const entries = fs.readdirSync(dirPath);
   const files = entries.map(entry => {
     const entryPath = path.join(dirPath, entry);
     const stat = fs.statSync(entryPath);
-    return stat.isDirectory() ? readdir(entryPath) : entryPath;
+    return stat.isDirectory() ? readdirRecursiveSync(entryPath) : entryPath;
   });
   return flatten(files);
 }
 
-function extractBlocks(graphqlString) {
+function extractDefinitions(graphqlString) {
   const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
     valueNames: ['between', 'left', 'match', 'right']
   });
 
-  let blocks = [];
+  let definitions = [];
 
   for(let i = 0; i < mr.length; ++i) {
-    let block = '';
+    let definition = '';
     if(mr[i].name === 'between') {
-      block = mr[i++].value.trim();        // [graphql operation]
-      if(block === '') continue;
-      block += ' ' + mr[i++].value.trim(); // {
-      block += mr[i++].value;              // [graphql body]
-      block += mr[i].value.trim();         // }
+      definition = mr[i++].value.trim();        // [graphql operation]
+      if(definition === '') continue;
+      definition += ' ' + mr[i++].value.trim(); // {
+      definition += mr[i++].value;              // [graphql body]
+      definition += mr[i].value.trim();         // }
     }
-    if(block) blocks.push(block);
+    if(definition) definitions.push(definition);
   }
 
-  return blocks;
+  return definitions;
 }
 
-function filterOperations(blocks) {
-  return blocks.reduce((result, operation) => {
+function filterOperations(definitions) {
+  return definitions.reduce((result, operation) => {
     let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
     let m = regExp.exec(operation);
     if(m) {
@@ -97,8 +73,8 @@ function findFragmentNames(operation) {
   return result;
 }
 
-function filterFragments(blocks) {
-  return blocks.reduce((result, operation) => {
+function filterFragments(definitions) {
+  return definitions.reduce((result, operation) => {
     let regExp = /\s*(fragment)[\s\n\r]+(\S+)\s+on\s+(\S+)\s*\{/;
     let m = regExp.exec(operation);
     if(m) {
@@ -146,3 +122,28 @@ function writeJsFile(fileName, jsonStrings) {
     fstream.write(';\n');
   }
 }
+
+function compileDir(dirPath) {
+  const files = readdirRecursiveSync(dirPath);
+  const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
+    if(/\.graphql$/.test(fileToCheck)) return graphqlFiles.concat(fileToCheck);
+    return graphqlFiles;
+  }, []);
+  graphqlFiles.forEach(file => compileFile(file));
+}
+
+function compileFile(graphqlFilePath) {
+  const jsFilePath = graphqlFilePath.replace(/(\.graphql)$/, ".js");
+  let graphqlString = fs.readFileSync(graphqlFilePath, "utf8");
+  graphqlString = graphqlString.replace(/#.*/g, '');
+  const definitions = extractDefinitions(graphqlString);
+  const operations = filterOperations(definitions);
+  const fragments = filterFragments(definitions);
+  const gqlStrings = makeGqlStrings(operations, fragments);
+  const gqlObjects = makeGqlObjects(gqlStrings);
+  const jsonStrings = makeJsonStrings(gqlObjects);
+  writeJsFile(jsFilePath, jsonStrings);
+}
+
+exports.compileDir = compileDir;
+exports.compileFile = compileFile;
