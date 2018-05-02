@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+/* global require, exports */
+
+const {compileDir} = require('./gqlc');
+
+compileDir('.');
