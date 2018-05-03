@@ -1,3 +1,5 @@
+# Hey Emacs, this is -*- coding: utf-8 -*-
+
 fragment Friends on Character {
   friends {
     name

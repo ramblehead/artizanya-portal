@@ -3,4 +3,4 @@
 
 const {compileDir} = require('./gqlc');
 
-compileDir('.');
+compileDir('../src');
