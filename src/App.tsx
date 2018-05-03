@@ -1,27 +1,30 @@
 import * as React from 'react';
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
 import { graphql, ChildProps } from 'react-apollo';
+import { GetCharacterQuery } from './graphql/queries';
 
 import './App.css';
 
-const HERO_QUERY = gql`
-  query GetCharacter($episode: String!) {
-    hero(episode: $episode) {
-      name
-      id
-      appearsIn {
-        title
-      }
-      friends {
-        name
-        id
-        appearsIn {
-          title
-        }
-      }
-    }
-  }
-`;
+// const { GetCharacterQuery } = require('./graphql/queries');
+
+// const GetCharacterQuery = gql`
+//   query GetCharacter($episode: String!) {
+//     hero(episode: $episode) {
+//       name
+//       id
+//       appearsIn {
+//         title
+//       }
+//       friends {
+//         name
+//         id
+//         appearsIn {
+//           title
+//         }
+//       }
+//     }
+//   }
+// `;
 
 interface AppearsIn {
   title: string;
@@ -42,7 +45,7 @@ interface InputProps {
   episode: string;
 }
 
-const withCharacter = graphql<Response, InputProps>(HERO_QUERY, {
+const withCharacter = graphql<Response, InputProps>(GetCharacterQuery, {
   options: ({ episode }) => ({
     variables: { episode }
   })
