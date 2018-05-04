@@ -123,7 +123,6 @@ function makeGqlJsonStrings(gqlObjects) {
 function writeTsFile(fileName, gqlJsonStrings) {
   const fstream = fs.createWriteStream(fileName);
   fstream.write('// Hey Emacs, this is -*- coding: utf-8 -*-\n');
-  fstream.write('/* global exports */\n');
   let exportNames = [];
   for(let jsonString of gqlJsonStrings) {
     let exportName = jsonString.name;
