@@ -7,6 +7,14 @@ const fs = require('mz/fs');
 const XRegExp = require('xregexp');
 const gql = require('graphql-tag');
 
+function upperCaseInitial(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function lowerCaseInitial(string) {
+  return string.charAt(0).toLowerCase() + string.slice(1);
+}
+
 function flatten(array) {
   return array.reduce(
     (flat, toFlatten) =>
@@ -51,7 +59,7 @@ function filterOperations(definitions) {
     let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
     let m = regExp.exec(operation);
     if(m) {
-      let name = m[2] + m[1].charAt(0).toUpperCase() + m[1].slice(1);
+      let name = lowerCaseInitial(m[2]) + upperCaseInitial(m[1]) + 'Gql';
       result.push({
         name,
         definition: operation,
@@ -87,9 +95,9 @@ function filterFragments(definitions) {
 
 function makeGqlStrings(operations, fragments) {
   return operations.map(operation => {
-    let gqlString = operation.definition + "\n";
+    let gqlString = operation.definition + '\n';
     for(let fragmentName of operation.fragmentNames) {
-      gqlString += "\n" + fragments[fragmentName] + "\n";
+      gqlString += '\n' + fragments[fragmentName] + '\n';
     }
     return {
       name: operation.name,
@@ -105,22 +113,39 @@ function makeGqlObjects(gqlStrings) {
   }));
 }
 
-function makeJsonStrings(gqlObjects) {
+function makeGqlJsonStrings(gqlObjects) {
   return gqlObjects.map(gqlObject => ({
     name: gqlObject.name,
-    value: JSON.stringify(gqlObject.value, null, 2)
+    value: JSON.stringify(gqlObject.value, null, 2).replace(/\"/g, "'")
   }));
 }
 
-function writeJsFile(fileName, jsonStrings) {
+function writeTsFile(fileName, gqlJsonStrings) {
   const fstream = fs.createWriteStream(fileName);
   fstream.write('// Hey Emacs, this is -*- coding: utf-8 -*-\n');
   fstream.write('/* global exports */\n');
-  for(let jsonString of jsonStrings) {
-    fstream.write('\nexports.' + jsonString.name + ' = ');
+  let exportNames = [];
+  for(let jsonString of gqlJsonStrings) {
+    let exportName = jsonString.name;
+    exportNames.push(exportName);
+    let objectName = jsonString.name + 'Object';
+    let castToAnyLine = 'let ' + exportName + ' = ' + objectName + ' as any;\n';
+    fstream.write('\nlet ' + objectName + ' = ');
     fstream.write(jsonString.value);
-    fstream.write(';\n');
-  }
+    fstream.write(';\n\n');
+    fstream.write(castToAnyLine);
+  };
+  if(exportNames) {
+    fstream.write('\nexport {\n');
+    for(let exportName of exportNames.slice(0, -1)) {
+      fstream.write('  ' + exportName + ',\n');
+    };
+    let exportNameLast = exportNames.slice(-1);
+    if(exportNameLast) {
+      fstream.write('  ' + exportNameLast + '\n');
+    }
+    fstream.write('};\n');
+  };
 }
 
 function compileDir(dirPath) {
@@ -134,16 +159,16 @@ function compileDir(dirPath) {
 
 function compileFile(graphqlFilePath) {
   console.log(path.resolve(graphqlFilePath));
-  const jsFilePath = graphqlFilePath.replace(/(\.graphql)$/, ".js");
-  let graphqlString = fs.readFileSync(graphqlFilePath, "utf8");
-  graphqlString = graphqlString.replace(/#.*/g, '');
-  const definitions = extractDefinitions(graphqlString);
+  const tsFilePath = graphqlFilePath.replace(/(\.graphql)$/, '.ts');
+  let gqlInString = fs.readFileSync(graphqlFilePath, 'utf8');
+  gqlInString = gqlInString.replace(/#.*/g, '');
+  const definitions = extractDefinitions(gqlInString);
   const operations = filterOperations(definitions);
   const fragments = filterFragments(definitions);
-  const gqlStrings = makeGqlStrings(operations, fragments);
-  const gqlObjects = makeGqlObjects(gqlStrings);
-  const jsonStrings = makeJsonStrings(gqlObjects);
-  writeJsFile(jsFilePath, jsonStrings);
+  const gqlOutStrings = makeGqlStrings(operations, fragments);
+  const gqlObjects = makeGqlObjects(gqlOutStrings);
+  const gqlJsonStrings = makeGqlJsonStrings(gqlObjects);
+  writeTsFile(tsFilePath, gqlJsonStrings);
 }
 
 exports.compileDir = compileDir;

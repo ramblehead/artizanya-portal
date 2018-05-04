@@ -1,13 +1,13 @@
 import * as React from 'react';
 // import gql from 'graphql-tag';
 import { graphql, ChildProps } from 'react-apollo';
-import { GetCharacterQuery } from './graphql/queries';
+import { getCharacterQueryGql } from './graphql/queries';
 
 import './App.css';
 
-// const { GetCharacterQuery } = require('./graphql/queries');
+// const { getCharacterQueryGql } = require('./graphql/queries');
 
-// const GetCharacterQuery = gql`
+// const getCharacterQueryGql = gql`
 //   query GetCharacter($episode: String!) {
 //     hero(episode: $episode) {
 //       name
@@ -45,7 +45,7 @@ interface InputProps {
   episode: string;
 }
 
-const withCharacter = graphql<Response, InputProps>(GetCharacterQuery, {
+const withCharacter = graphql<Response, InputProps>(getCharacterQueryGql, {
   options: ({ episode }) => ({
     variables: { episode }
   })
