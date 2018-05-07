@@ -2,6 +2,8 @@ import * as React from 'react';
 // import gql from 'graphql-tag';
 import { graphql, ChildProps } from 'react-apollo';
 import { getCharacterQueryGql } from './graphql/queries';
+import { GetCharacterQuery,
+         GetCharacterQueryVariables } from './graphql/queries-types';
 
 import './App.css';
 
@@ -24,34 +26,36 @@ import './App.css';
 //       }
 //     }
 //   }
-// `;
+// `
 
-interface AppearsIn {
-  title: string;
-}
+// interface AppearsIn {
+//   title: string;
+// }
+//
+// interface Hero {
+//   name: string;
+//   id: string;
+//   appearsIn: AppearsIn[];
+//   friends: Hero[];
+// }
+//
+// interface GetCharacterQuery {
+//   hero: Hero;
+// }
+//
+// interface GetCharacterQueryVariables {
+//   episode: string;
+// }
 
-interface Hero {
-  name: string;
-  id: string;
-  appearsIn: AppearsIn[];
-  friends: Hero[];
-}
+const withCharacter = graphql<GetCharacterQuery, GetCharacterQueryVariables>(
+  getCharacterQueryGql, {
+    options: ({ episode }) => ({
+      variables: { episode }
+    })
+  });
 
-interface Response {
-  hero: Hero;
-}
-
-interface InputProps {
-  episode: string;
-}
-
-const withCharacter = graphql<Response, InputProps>(getCharacterQueryGql, {
-  options: ({ episode }) => ({
-    variables: { episode }
-  })
-});
-
-class Character extends React.Component<ChildProps<InputProps, Response>, {}> {
+class Character extends React.Component<ChildProps<GetCharacterQueryVariables,
+                                                   GetCharacterQuery>, {}> {
   render() {
     const data = this.props.data!;
     const { loading, error } = data;

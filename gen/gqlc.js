@@ -7,30 +7,7 @@ const fs = require('mz/fs');
 const XRegExp = require('xregexp');
 const gql = require('graphql-tag');
 
-function upperCaseInitial(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function lowerCaseInitial(string) {
-  return string.charAt(0).toLowerCase() + string.slice(1);
-}
-
-function flatten(array) {
-  return array.reduce(
-    (flat, toFlatten) =>
-      flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten),
-    []);
-}
-
-function readdirRecursiveSync(dirPath) {
-  const entries = fs.readdirSync(dirPath);
-  const files = entries.map(entry => {
-    const entryPath = path.join(dirPath, entry);
-    const stat = fs.statSync(entryPath);
-    return stat.isDirectory() ? readdirRecursiveSync(entryPath) : entryPath;
-  });
-  return flatten(files);
-}
+const u = require('./utils');
 
 function extractDefinitions(graphqlString) {
   const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
@@ -59,7 +36,7 @@ function filterOperations(definitions) {
     let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
     let m = regExp.exec(operation);
     if(m) {
-      let name = lowerCaseInitial(m[2]) + upperCaseInitial(m[1]) + 'Gql';
+      let name = u.lowerCaseInitial(m[2]) + u.upperCaseInitial(m[1]) + 'Gql';
       result.push({
         name,
         definition: operation,
@@ -148,7 +125,7 @@ function writeTsFile(fileName, gqlJsonStrings) {
 }
 
 function compileDir(dirPath) {
-  const files = readdirRecursiveSync(dirPath);
+  const files = u.readdirRecursiveSync(dirPath);
   const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
     if(/\.graphql$/.test(fileToCheck)) return graphqlFiles.concat(fileToCheck);
     return graphqlFiles;
@@ -157,8 +134,8 @@ function compileDir(dirPath) {
 }
 
 function compileFile(graphqlFilePath) {
-  console.log(path.resolve(graphqlFilePath));
   const tsFilePath = graphqlFilePath.replace(/(\.graphql)$/, '.ts');
+  console.log(path.resolve(tsFilePath));
   let gqlInString = fs.readFileSync(graphqlFilePath, 'utf8');
   gqlInString = gqlInString.replace(/#.*/g, '');
   const definitions = extractDefinitions(gqlInString);

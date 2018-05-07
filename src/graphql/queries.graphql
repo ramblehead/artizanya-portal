@@ -3,6 +3,10 @@
 fragment Friends on Character {
   friends {
     name
+    id
+    appearsIn {
+      title
+    }
   }
 }
 
