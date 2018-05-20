@@ -7,46 +7,6 @@ import { GetCharacterQuery,
 
 import './App.css';
 
-// const { getCharacterQueryGql } = require('./graphql/queries');
-
-// const getCharacterQueryGql = gql`
-//   query GetCharacter($episode: String!) {
-//     hero(episode: $episode) {
-//       name
-//       id
-//       appearsIn {
-//         title
-//       }
-//       friends {
-//         name
-//         id
-//         appearsIn {
-//           title
-//         }
-//       }
-//     }
-//   }
-// `
-
-// interface AppearsIn {
-//   title: string;
-// }
-//
-// interface Hero {
-//   name: string;
-//   id: string;
-//   appearsIn: AppearsIn[];
-//   friends: Hero[];
-// }
-//
-// interface GetCharacterQuery {
-//   hero: Hero;
-// }
-//
-// interface GetCharacterQueryVariables {
-//   episode: string;
-// }
-
 const withCharacter = graphql<GetCharacterQuery, GetCharacterQueryVariables>(
   getCharacterQueryGql, {
     options: ({ episode }) => ({

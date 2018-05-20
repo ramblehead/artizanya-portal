@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@types/xregexp": "^3.0.29",
     "apollo-client-preset": "^1.0.8",
     "graphql": "0.13.0",
     "graphql-tag": "^2.8.0",
@@ -21,6 +20,7 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/xregexp": "^3.0.29",
     "@types/graphql": "^0.12.4",
     "@types/jest": "^22.1.4",
     "@types/lodash": "^4.14.104",
