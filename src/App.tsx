@@ -1,21 +1,22 @@
 import * as React from 'react';
 // import gql from 'graphql-tag';
 import { graphql, ChildProps } from 'react-apollo';
-import { getCharacterQueryGql } from './graphql/queries';
-import { GetCharacterQuery,
-         GetCharacterQueryVariables } from './graphql/queries-types';
+
+import { getElementQueryGql } from './graphql/queries';
+import { GetElementQuery,
+         GetElementQueryVariables } from './graphql/queries-types';
 
 import './App.css';
 
-const withCharacter = graphql<GetCharacterQuery, GetCharacterQueryVariables>(
-  getCharacterQueryGql, {
-    options: ({ episode }) => ({
-      variables: { episode }
+const withElement = graphql<GetElementQuery, GetElementQueryVariables>(
+  getElementQueryGql, {
+    options: ({ id }) => ({
+      variables: { id }
     })
   });
 
-class Character extends React.Component<ChildProps<GetCharacterQueryVariables,
-                                                   GetCharacterQuery>, {}> {
+class Element extends React.Component<ChildProps<GetElementQueryVariables,
+                                                 GetElementQuery>, {}> {
   render() {
     const data = this.props.data!;
     const { loading, error } = data;
@@ -23,14 +24,14 @@ class Character extends React.Component<ChildProps<GetCharacterQueryVariables,
     if (loading) { return <div>Loading</div>; }
     if (error) { return <div>Error</div>; }
 
-    const hero = data.hero!;
-    console.log(hero);
+    const element = data.element!;
+    console.log(element);
 
-    return <div>{hero.name}</div>;
+    return <div>{element.name}</div>;
   }
 }
 
-let CharacterWithData = withCharacter(Character);
+let ElementWithData = withElement(Element);
 
 const logo = require('./logo.svg');
 
@@ -45,7 +46,7 @@ class App extends React.Component {
         <p className="App-intro">
           To get started, edit <code>src/App.ts</code> and save to reload.
         </p>
-        <CharacterWithData episode="Awakens" />
+        <ElementWithData id="0003" />
       </div>
     );
   }

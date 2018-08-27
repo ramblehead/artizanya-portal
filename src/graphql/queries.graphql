@@ -1,33 +1,9 @@
 # Hey Emacs, this is -*- coding: utf-8 -*-
 
-fragment Friends on Character {
-  friends {
-    name
+query GetElement($id: String!) {
+  element(id: $id) {
     id
-    appearsIn {
-      title
-    }
-  }
-}
-
-fragment AppearsIn on Character {
-  appearsIn {
-    title
-  }
-}
-
-query GetCharacter($episode: String!) {
-  hero(episode: $episode) {
     name
-    id
-    ...AppearsIn
-    ...Friends
-  }
-}
-
-query GetHuman($id: String!) {
-  human(id: $id) {
-    name
-    ...Friends
+    description
   }
 }
