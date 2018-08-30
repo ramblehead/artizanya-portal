@@ -3,15 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "apollo-cache-inmemory": "^1.2.9",
+    "apollo-client": "^2.4.1",
     "apollo-client-preset": "^1.0.8",
-    "graphql": "0.13.0",
-    "graphql-tag": "^2.8.0",
-    "lodash": "^4.17.5",
-    "react": "^16.2.0",
-    "react-apollo": "^2.0.4",
-    "react-dom": "^16.2.0",
-    "react-scripts-ts": "2.13.0",
-    "xregexp": "^4.1.1"
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.2",
+    "lodash": "^4.17.10",
+    "react": "^16.4.2",
+    "react-apollo": "^2.1.11",
+    "react-dom": "^16.4.2",
+    "react-sortable-tree": "^2.2.0",
+    "xregexp": "^4.2.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -20,16 +22,20 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/xregexp": "^3.0.29",
-    "@types/graphql": "^0.12.4",
-    "@types/jest": "^22.1.4",
-    "@types/lodash": "^4.14.104",
+    "@types/graphql": "^0.13.4",
+    "@types/jest": "^23.3.1",
+    "@types/lodash": "^4.14.116",
     "@types/mz": "0.0.32",
-    "@types/node": "^9.4.6",
-    "@types/react": "^16.0.40",
-    "@types/react-dom": "^16.0.4",
-    "apollo-codegen": "^0.19.0",
+    "@types/node": "^10.9.3",
+    "@types/react": "^16.4.13",
+    "@types/react-dom": "^16.0.7",
+    "@types/react-sortable-tree": "^0.2.5",
+    "@types/xregexp": "^3.0.29",
+    "ajv": "^6.5.3",
+    "apollo-codegen": "^0.20.2",
     "mz": "^2.7.0",
-    "typescript": "^2.7.2"
+    "react-scripts-ts": "^2.17.0",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
   }
 }
