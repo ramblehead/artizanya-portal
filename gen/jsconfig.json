@@ -15,5 +15,9 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "noUnusedLocals": true
-  }
+  },
+  "files": [
+    "auto-graphql-all",
+    "schema-db-introspect"
+  ]
 }

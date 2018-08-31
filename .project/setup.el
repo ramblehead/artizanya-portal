@@ -19,4 +19,6 @@
                                              (goto-char (point-min))
                                              (thing-at-point 'line t)))
                (string-match-p "\\.js\\'" file-rpath))
+           (setq rh-js2-additional-externs
+                 (append rh-js2-additional-externs '("require")))
            (rh-javascript-setup)))))

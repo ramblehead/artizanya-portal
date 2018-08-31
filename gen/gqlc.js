@@ -1,5 +1,4 @@
 // Hey Emacs, this is -*- coding: utf-8 -*-
-/* global require, exports */
 
 const path = require('path');
 const fs = require('mz/fs');

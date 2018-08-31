@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-/* global require */
 
-const {compileDir} = require('./gqlc');
-const {generateTypesForDir} = require('./gqlt');
+const { compileDir } = require('./gqlc');
+const { generateTypesForDir } = require('./gqlt');
 
 console.log('Compiling graphql to gql-js files...');
 compileDir('../src');
