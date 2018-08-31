@@ -35,7 +35,7 @@ function filterOperations(definitions) {
     let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
     let m = regExp.exec(operation);
     if(m) {
-      let name = u.lowerCaseInitial(m[2]) + u.upperCaseInitial(m[1]) + 'Gql';
+      let name = u.lowerCaseInitial(m[2]) + 'Gql';
       result.push({
         name,
         definition: operation,
