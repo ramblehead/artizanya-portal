@@ -72,7 +72,7 @@ class App extends React.Component {
         <p className="App-intro">
           To get started, edit <code>src/App.ts</code> and save to reload.
         </p>
-          <ElementWithData id="0003" />
+        <ElementWithData id="0003" />
         <Tree />
       </div>
     );
