@@ -10,15 +10,16 @@
      (concat (rh-project-get-root) "node_modules/.bin/tslint"))
 
 (let ((project-root (rh-project-get-root))
-      file-rpath)
+      file-rpath ext-js)
   (when project-root
     (setq file-rpath (file-relative-name buffer-file-name project-root))
     (cond ((string-match-p "\\.ts\\'\\|\\.tsx\\'" file-rpath)
-           (rh-typescript-setup))
+           (rh-setup-typescript-tide))
           ((or (string-match-p "^#!.*node" (save-excursion
                                              (goto-char (point-min))
                                              (thing-at-point 'line t)))
-               (string-match-p "\\.js\\'" file-rpath))
+               (setq ext-js (string-match-p "\\.js\\'" file-rpath)))
+           (when (not ext-js) (setq tide-require-manual-setup t))
            (setq rh-js2-additional-externs
-                 (append rh-js2-additional-externs '("require")))
-           (rh-javascript-setup)))))
+                 (append rh-js2-additional-externs '("require" "exports")))
+           (rh-setup-javascript-tide)))))

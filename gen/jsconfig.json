@@ -19,5 +19,12 @@
   "files": [
     "auto-graphql-all",
     "schema-db-introspect"
+  ],
+  "include": [
+    "**/*.js",
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
