@@ -6,7 +6,7 @@ const fs = require('mz/fs');
 const XRegExp = require('xregexp');
 const gql = require('graphql-tag');
 
-const u = require('./utils');
+const utils = require('./utils');
 
 function extractDefinitions(graphqlString) {
   const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
@@ -32,10 +32,10 @@ function extractDefinitions(graphqlString) {
 
 function filterOperations(definitions) {
   return definitions.reduce((result, operation) => {
-    let regExp = /\s*(query|mutation)[\s\n\r]+(.+)[\s\n\r]*\([^]*?{/;
+    let regExp = /\s*(query|mutation)[\s\n\r]+([^\s\(\{)]+)[^]*{/;
     let m = regExp.exec(operation);
     if(m) {
-      let name = u.lowerCaseInitial(m[2]) + 'Gql';
+      let name = utils.lowerCaseInitial(m[2]) + 'Gql';
       result.push({
         name,
         definition: operation,
@@ -124,7 +124,7 @@ function writeTsFile(fileName, gqlJsonStrings) {
 }
 
 function compileDir(dirPath) {
-  const files = u.readdirRecursiveSync(dirPath);
+  const files = utils.readdirRecursiveSync(dirPath);
   const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
     if(/\.graphql$/.test(fileToCheck)) return graphqlFiles.concat(fileToCheck);
     return graphqlFiles;

@@ -8,21 +8,55 @@ import { getElementGql } from './graphql/queries';
 import { GetElement,
          GetElementVariables } from './graphql/queries-types';
 
-import SortableTree from 'react-sortable-tree';
+import { getElementIdsGql } from './graphql/queries';
+import { GetElementIds } from './graphql/queries-types';
+
+import SortableTree,
+       { ReactSortableTreeProps,
+         FullTree as TreeState } from 'react-sortable-tree';
 
 import 'react-sortable-tree/style.css';
 import './App.css';
 
-class Tree extends Component<any, any> {
-  constructor(props: any) {
-    super(props);
+type TreeProps =
+  ChildProps<{}, GetElementIds> & ReactSortableTreeProps;
 
-    this.state = {
-      treeData: [{ title: 'Chicken', children: [{ title: 'Egg' }] }],
-    };
-  }
+const withElementIds = graphql<{}, GetElementIds>(
+  getElementIdsGql, {
+    options: () => ({
+      variables: {}
+    })
+  });
+
+class Tree extends Component<TreeProps, TreeState> {
+  // constructor(props: any) {
+  //   super(props);
+  //
+  //   this.state = {
+  //     treeData: [{ title: 'Chicken', children: [{ title: 'Egg' }] }],
+  //   };
+  // }
 
   render() {
+    const data = this.props.data!;
+    const { loading, error } = data;
+
+    if (loading) { return <div>Loading</div>; }
+    if (error) { return <div>Error</div>; }
+
+    this.state = {
+      treeData: []
+    };
+
+    let elementIds = data.elementIds!.slice();
+    elementIds.sort();
+    for(let elementId of elementIds) {
+      this.state.treeData.push({
+        title: elementId
+        // subtitle: element.description
+      });
+    }
+
     return (
       <div style={{ height: 400 }}>
         <SortableTree
@@ -34,6 +68,8 @@ class Tree extends Component<any, any> {
   }
 }
 
+let TreeWithData = withElementIds(Tree);
+
 const withElement = graphql<GetElementVariables, GetElement>(
   getElementGql, {
     options: ({ id }) => ({
@@ -42,7 +78,8 @@ const withElement = graphql<GetElementVariables, GetElement>(
   });
 
 class Element extends Component<ChildProps<GetElementVariables,
-                                           GetElement>, {}> {
+                                           GetElement>, {}>
+{
   render() {
     const data = this.props.data!;
     const { loading, error } = data;
@@ -73,7 +110,7 @@ class App extends React.Component {
           To get started, edit <code>src/App.ts</code> and save to reload.
         </p>
         <ElementWithData id="0003" />
-        <Tree />
+        <TreeWithData />
       </div>
     );
   }
