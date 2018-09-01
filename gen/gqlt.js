@@ -4,10 +4,10 @@
 const path = require('path');
 const { execSync } = require('child_process');
 
-const u = require('./utils');
+const utils = require('./utils');
 
 function generateTypesForDir(dirPath, schemaPath, apolloCodegenPath) {
-  const files = u.readdirRecursiveSync(dirPath);
+  const files = utils.readdirRecursiveSync(dirPath);
   const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
     if(/\.graphql$/.test(fileToCheck)) return graphqlFiles.concat(fileToCheck);
     return graphqlFiles;

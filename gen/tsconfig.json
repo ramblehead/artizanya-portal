@@ -4,6 +4,7 @@
     "target": "es2017",
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
+    "allowJs": true,
     "checkJs": true,
     "lib": ["es2017", "esnext.asynciterable"],
     "moduleResolution": "node",
@@ -13,14 +14,6 @@
     "noImplicitAny": false,
     "noUnusedLocals": true
   },
-  "files": [
-    "auto-graphql-all",
-    "schema-db-introspect"
-  ],
-  "include": [
-    "**/*.js",
-    "**/*.ts"
-  ],
   "exclude": [
     "node_modules"
   ]
