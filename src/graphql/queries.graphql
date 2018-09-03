@@ -8,6 +8,10 @@ query GetElement($id: String!) {
   }
 }
 
-query GetElementIds {
-  elementIds
+query GetElements {
+  elements {
+    id
+    name
+    description
+  }
 }

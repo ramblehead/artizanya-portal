@@ -8,21 +8,23 @@ import { getElementGql } from './graphql/queries';
 import { GetElement,
          GetElementVariables } from './graphql/queries-types';
 
-import { getElementIdsGql } from './graphql/queries';
-import { GetElementIds } from './graphql/queries-types';
+import { getElementsGql } from './graphql/queries';
+import { GetElements } from './graphql/queries-types';
 
 import SortableTree,
        { ReactSortableTreeProps,
-         FullTree as TreeState } from 'react-sortable-tree';
+         FullTree } from 'react-sortable-tree';
 
 import 'react-sortable-tree/style.css';
 import './App.css';
 
 type TreeProps =
-  ChildProps<{}, GetElementIds> & ReactSortableTreeProps;
+  ChildProps<{}, GetElements> & ReactSortableTreeProps;
 
-const withElementIds = graphql<{}, GetElementIds>(
-  getElementIdsGql, {
+interface TreeState extends FullTree {}
+
+const withElementIds = graphql<{}, GetElements>(
+  getElementsGql, {
     options: () => ({
       variables: {}
     })
@@ -48,12 +50,13 @@ class Tree extends Component<TreeProps, TreeState> {
       treeData: []
     };
 
-    let elementIds = data.elementIds!.slice();
-    elementIds.sort();
-    for(let elementId of elementIds) {
+    let elements = data.elements!.slice();
+    // elements.sort();
+    for(let element of elements) {
       this.state.treeData.push({
-        title: elementId
-        // subtitle: element.description
+        id: element.id,
+        title: element.name,
+        subtitle: element.description
       });
     }
 
