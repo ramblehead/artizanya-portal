@@ -23,7 +23,7 @@ type TreeProps =
 
 interface TreeState extends FullTree {}
 
-const withElementIds = graphql<{}, GetElements>(
+const withElements = graphql<{}, GetElements>(
   getElementsGql, {
     options: () => ({
       variables: {}
@@ -71,7 +71,7 @@ class Tree extends Component<TreeProps, TreeState> {
   }
 }
 
-let TreeWithData = withElementIds(Tree);
+let TreeWithData = withElements(Tree);
 
 const withElement = graphql<GetElementVariables, GetElement>(
   getElementGql, {
