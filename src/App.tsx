@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Component } from 'react';
-import { graphql, ChildProps } from 'react-apollo';
+import { graphql, ChildProps, Query } from 'react-apollo';
 
 import { getElementGql } from './graphql/queries';
 import { GetElement,
@@ -99,6 +99,18 @@ class Element extends Component<ChildProps<GetElementVariables,
 
 let ElementWithData = withElement(Element);
 
+class ElementQueryX extends Query<GetElement, GetElementVariables> {}
+
+const ElementX = ({ id }: GetElementVariables) => (
+  <ElementQueryX query={getElementGql} variables={{ id }}>
+    {({ loading, error, data }) => {
+       if (loading) { return <div>Loading</div>; }
+       if (error) { return <div>Error</div>; }
+       return <div>{data!.element!.name}</div>;
+    }}
+  </ElementQueryX>
+);
+
 const logo = require('./logo.svg');
 
 class App extends React.Component {
@@ -113,6 +125,7 @@ class App extends React.Component {
           To get started, edit <code>src/App.ts</code> and save to reload.
         </p>
         <ElementWithData id="0003" />
+        <ElementX id="0002" />
         <TreeWithData />
       </div>
     );
