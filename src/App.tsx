@@ -31,13 +31,13 @@ const withElements = graphql<{}, GetElements>(
   });
 
 class Tree extends Component<TreeProps, TreeState> {
-  // constructor(props: any) {
-  //   super(props);
-  //
-  //   this.state = {
-  //     treeData: [{ title: 'Chicken', children: [{ title: 'Egg' }] }],
-  //   };
-  // }
+  constructor(props: TreeProps) {
+    super(props);
+
+    // this.state = {
+    //   treeData: [{ title: 'Chicken', children: [{ title: 'Egg' }] }],
+    // };
+  }
 
   render() {
     const data = this.props.data!;
@@ -73,6 +73,8 @@ class Tree extends Component<TreeProps, TreeState> {
 
 let TreeWithData = withElements(Tree);
 
+// Higher Order Component (HOC) example
+
 const withElement = graphql<GetElementVariables, GetElement>(
   getElementGql, {
     options: ({ id }) => ({
@@ -99,17 +101,45 @@ class Element extends Component<ChildProps<GetElementVariables,
 
 let ElementWithData = withElement(Element);
 
-class ElementQueryX extends Query<GetElement, GetElementVariables> {}
+// Render prop example for stateless functional component
+// see https://hackernoon.com/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc
+// see https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce
+
+class ElementQuery extends Query<GetElement, GetElementVariables> {}
 
 const ElementX = ({ id }: GetElementVariables) => (
-  <ElementQueryX query={getElementGql} variables={{ id }}>
+  <ElementQuery query={getElementGql} variables={{ id }}>
     {({ loading, error, data }) => {
        if (loading) { return <div>Loading</div>; }
        if (error) { return <div>Error</div>; }
        return <div>{data!.element!.name}</div>;
     }}
-  </ElementQueryX>
+  </ElementQuery>
 );
+
+// Render prop example for class component
+
+class ElementY extends Component<GetElementVariables, {}> {
+  constructor(props: GetElementVariables) {
+    super(props);
+
+    // this.state = {
+    //   treeData: [{ title: 'Chicken', children: [{ title: 'Egg' }] }],
+    // };
+  }
+
+  render() {
+    return (
+      <ElementQuery query={getElementGql} variables={{ id: this.props.id }}>
+        {({ loading, error, data }) => {
+           if (loading) { return <div>Loading</div>; }
+           if (error) { return <div>Error</div>; }
+           return <div>{data!.element!.name}</div>;
+        }}
+      </ElementQuery>
+    );
+  }
+}
 
 const logo = require('./logo.svg');
 
@@ -126,6 +156,7 @@ class App extends React.Component {
         </p>
         <ElementWithData id="0003" />
         <ElementX id="0002" />
+        <ElementY id="0001" />
         <TreeWithData />
       </div>
     );
