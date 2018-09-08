@@ -12,66 +12,65 @@ import { getElementsGql } from './graphql/queries';
 import { GetElements } from './graphql/queries-types';
 
 import SortableTree,
-       { ReactSortableTreeProps,
-         FullTree } from 'react-sortable-tree';
+       { FullTree } from 'react-sortable-tree';
 
 import 'react-sortable-tree/style.css';
 import './App.css';
 
-type TreeProps =
-  ChildProps<{}, GetElements> & ReactSortableTreeProps;
+// type TreeProps = ReactSortableTreeProps;
+// type TreeProps = GetElements & ReactSortableTreeProps;
 
 interface TreeState extends FullTree {}
 
-const withElements = graphql<{}, GetElements>(
-  getElementsGql, {
-    options: () => ({
-      variables: {}
-    })
-  });
+class ElementsQuery extends Query<GetElements, {}> {}
 
-class Tree extends Component<TreeProps, TreeState> {
-  constructor(props: TreeProps) {
-    super(props);
+class ElementsTree extends Component<{}, TreeState> {
+  // constructor() {
+  //   super({treeData: [], onChange: treeData => {}});
+  // }
 
-    // this.state = {
-    //   treeData: [{ title: 'Chicken', children: [{ title: 'Egg' }] }],
-    // };
-  }
+  // constructor(props: TreeProps) {
+  //   super(props);
+  //
+  //   this.state = {
+  //     treeData: [{ title: 'Chicken', children: [{ title: 'Egg' }] }],
+  //   };
+  // }
 
   render() {
-    const data = this.props.data!;
-    const { loading, error } = data;
-
-    if (loading) { return <div>Loading</div>; }
-    if (error) { return <div>Error</div>; }
-
-    this.state = {
-      treeData: []
-    };
-
-    let elements = data.elements!.slice();
-    // elements.sort();
-    for(let element of elements) {
-      this.state.treeData.push({
-        id: element.id,
-        title: element.name,
-        subtitle: element.description
-      });
-    }
-
     return (
-      <div style={{ height: 400 }}>
-        <SortableTree
-          treeData={this.state.treeData}
-          onChange={treeData => this.setState({ treeData })}
-        />
-      </div>
+      <ElementsQuery query={getElementsGql}>
+        {({ loading, error, data }) => {
+           if (loading) { return <div>Loading</div>; }
+           if (error) { return <div>Error</div>; }
+
+           this.state = {
+             treeData: []
+           };
+
+           let elements = data!.elements!.slice();
+           // elements.sort();
+           for(let element of elements) {
+             this.state.treeData.push({
+               id: element.id,
+               title: element.name,
+               subtitle: element.description
+             });
+           }
+
+           return (
+             <div style={{ height: 400 }}>
+               <SortableTree
+                 treeData={this.state.treeData}
+                 onChange={treeData => this.setState({ treeData })}
+               />
+             </div>
+           );
+        }}
+      </ElementsQuery>
     );
   }
 }
-
-let TreeWithData = withElements(Tree);
 
 // Higher Order Component (HOC) example
 
@@ -157,7 +156,7 @@ class App extends React.Component {
         <ElementWithData id="0003" />
         <ElementX id="0002" />
         <ElementY id="0001" />
-        <TreeWithData />
+        <ElementsTree />
       </div>
     );
   }
