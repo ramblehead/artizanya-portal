@@ -48,8 +48,7 @@ class ElementsTree extends Component<{}, TreeState> {
              treeData: []
            };
 
-           let elements = data!.elements!.slice();
-           // elements.sort();
+           let elements = data!.elements!;
            for(let element of elements) {
              this.state.treeData.push({
                id: element.id,
