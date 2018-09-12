@@ -14,6 +14,9 @@ import { GetElements } from './graphql/queries-types';
 import SortableTree,
        { FullTree } from 'react-sortable-tree';
 
+import { Button } from 'reactstrap';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-sortable-tree/style.css';
 import './App.css';
 
@@ -91,7 +94,6 @@ class Element extends Component<ChildProps<GetElementVariables,
     if (error) { return <div>Error</div>; }
 
     const element = data.element!;
-    console.log(element);
 
     return <div>{element.name}</div>;
   }
@@ -156,6 +158,7 @@ class App extends React.Component {
         <ElementX id="0002" />
         <ElementY id="0001" />
         <ElementsTree />
+        <Button color="primary">Press me</Button>
       </div>
     );
   }
