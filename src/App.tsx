@@ -51,7 +51,7 @@ class ElementsTree extends Component<{}, TreeState> {
              treeData: []
            };
 
-           let elements = data!.elements!;
+           let elements = data!.elements;
            for(let element of elements) {
              this.state.treeData.push({
                id: element.id,
