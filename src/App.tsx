@@ -46,12 +46,13 @@ class ElementsTree extends Component<{}, TreeState> {
         {({ loading, error, data }) => {
            if (loading) { return <div>Loading</div>; }
            if (error) { return <div>Error</div>; }
+           data = data as GetElements;
 
            this.state = {
              treeData: []
            };
 
-           let elements = data!.elements;
+           let elements = data.elements;
            for(let element of elements) {
              this.state.treeData.push({
                id: element.id,
