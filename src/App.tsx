@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Component } from 'react';
-import { graphql, ChildProps, Query } from 'react-apollo';
+import { Query } from 'react-apollo';
 
 import { getElementGql } from './graphql/queries';
 import { GetElement,
@@ -14,7 +14,7 @@ import { GetElements } from './graphql/queries-types';
 import SortableTree,
        { FullTree } from 'react-sortable-tree';
 
-import { Button } from 'reactstrap';
+import { Button, ButtonGroup } from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-sortable-tree/style.css';
@@ -75,33 +75,6 @@ class ElementsTree extends Component<{}, TreeState> {
   }
 }
 
-// Higher Order Component (HOC) example
-
-const withElement = graphql<GetElementVariables, GetElement>(
-  getElementGql, {
-    options: ({ id }) => ({
-      variables: { id }
-    })
-  });
-
-class Element extends Component<ChildProps<GetElementVariables,
-                                           GetElement>, {}>
-{
-  render() {
-    const data = this.props.data!;
-    const { loading, error } = data;
-
-    if (loading) { return <div>Loading</div>; }
-    if (error) { return <div>Error</div>; }
-
-    const element = data.element!;
-
-    return <div>{element.name}</div>;
-  }
-}
-
-let ElementWithData = withElement(Element);
-
 // Render prop example for stateless functional component
 // see https://hackernoon.com/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc
 // see https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce
@@ -142,6 +115,49 @@ class ElementY extends Component<GetElementVariables, {}> {
   }
 }
 
+class Example extends Component<{}, { selected: number }> {
+  constructor(props: {}) {
+    super(props);
+
+    this.state = { selected: 1 };
+
+    // this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
+  }
+
+  onRadioBtnClick = (selected: number) => this.setState({ selected });
+
+  render() {
+    return (
+      <div>
+        <ButtonGroup>
+          <Button
+            color="primary"
+            onClick={() => this.onRadioBtnClick(1)}
+            active={this.state.selected === 1}
+          >
+            One
+          </Button>
+          <Button
+            color="primary"
+            onClick={() => this.onRadioBtnClick(2)}
+            active={this.state.selected === 2}
+          >
+            Two
+          </Button>
+          <Button
+            color="primary"
+            onClick={() => this.onRadioBtnClick(3)}
+            active={this.state.selected === 3}
+          >
+            Three
+          </Button>
+        </ButtonGroup>
+        <p>Selected: {this.state.selected}</p>
+      </div>
+    );
+  }
+}
+
 const logo = require('./logo.svg');
 
 class App extends React.Component {
@@ -155,11 +171,10 @@ class App extends React.Component {
         <p className="App-intro">
           To get started, edit <code>src/App.ts</code> and save to reload.
         </p>
-        <ElementWithData id="0003" />
         <ElementX id="0002" />
         <ElementY id="0001" />
         <ElementsTree />
-        <Button color="primary">Press me</Button>
+        <Example />
       </div>
     );
   }
