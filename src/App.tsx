@@ -115,13 +115,11 @@ class ElementY extends Component<GetElementVariables, {}> {
   }
 }
 
-class Example extends Component<{}, { selected: number }> {
+class RadioButtons extends Component<{}, { selected: number }> {
   constructor(props: {}) {
     super(props);
 
     this.state = { selected: 1 };
-
-    // this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
   }
 
   onRadioBtnClick = (selected: number) => this.setState({ selected });
@@ -152,6 +150,21 @@ class Example extends Component<{}, { selected: number }> {
             Three
           </Button>
         </ButtonGroup>
+      </div>
+    );
+  }
+}
+
+class SelectedButtonIndicator extends Component<{}, { selected: number }> {
+  constructor(props: {}) {
+    super(props);
+
+    this.state = { selected: 1 };
+  }
+
+  render() {
+    return (
+      <div>
         <p>Selected: {this.state.selected}</p>
       </div>
     );
@@ -174,7 +187,8 @@ class App extends React.Component {
         <ElementX id="0002" />
         <ElementY id="0001" />
         <ElementsTree />
-        <Example />
+        <RadioButtons />
+        <SelectedButtonIndicator />
       </div>
     );
   }
