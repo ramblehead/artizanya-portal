@@ -6,6 +6,8 @@ import './index.css';
 
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { withClientState } from 'apollo-link-state';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
@@ -13,9 +15,13 @@ const httpLink = new HttpLink({
   uri: 'http://localhost:8529/_db/_system/land'
 });
 
+const cache = new InMemoryCache();
+
+const stateLink = withClientState({cache, resolvers: {}});
+
 const client = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache()
+  cache,
+  link: ApolloLink.from([stateLink, httpLink]),
 });
 
 ReactDOM.render(

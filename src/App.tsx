@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Component } from 'react';
-import { Query } from 'react-apollo';
+import { Query, ApolloConsumer } from 'react-apollo';
 
 import { getElementGql } from './graphql/queries';
 import { GetElement,
@@ -16,9 +16,12 @@ import SortableTree,
 
 import { Button, ButtonGroup } from 'reactstrap';
 
+import gql from 'graphql-tag';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-sortable-tree/style.css';
 import './App.css';
+import { ApolloClient } from 'apollo-client';
 
 // type TreeProps = ReactSortableTreeProps;
 // type TreeProps = GetElements & ReactSortableTreeProps;
@@ -115,6 +118,18 @@ class ElementY extends Component<GetElementVariables, {}> {
   }
 }
 
+const getSelectedRadioButtonGql = gql`
+{
+  selectedRadioButton @client
+}
+`;
+
+interface GetSelectedRadioButton {
+  selectedRadioButton: number;
+}
+
+class SelectedRadioButtonQuery extends Query<GetSelectedRadioButton, {}> {}
+
 class RadioButtons extends Component<{}, { selected: number }> {
   constructor(props: {}) {
     super(props);
@@ -122,35 +137,42 @@ class RadioButtons extends Component<{}, { selected: number }> {
     this.state = { selected: 1 };
   }
 
-  onRadioBtnClick = (selected: number) => this.setState({ selected });
+  onRadioButtonClick = (selected: number, client: ApolloClient<any>) => {
+    this.setState({ selected });
+    client.writeData({ data: { selectedRadioButton : selected } });
+  }
 
   render() {
     return (
-      <div>
-        <ButtonGroup>
-          <Button
-            color="primary"
-            onClick={() => this.onRadioBtnClick(1)}
-            active={this.state.selected === 1}
-          >
-            One
-          </Button>
-          <Button
-            color="primary"
-            onClick={() => this.onRadioBtnClick(2)}
-            active={this.state.selected === 2}
-          >
-            Two
-          </Button>
-          <Button
-            color="primary"
-            onClick={() => this.onRadioBtnClick(3)}
-            active={this.state.selected === 3}
-          >
-            Three
-          </Button>
-        </ButtonGroup>
-      </div>
+      <ApolloConsumer>
+        {client => (
+          <div>
+            <ButtonGroup>
+              <Button
+                color="primary"
+                onClick={() => this.onRadioButtonClick(1, client)}
+                active={this.state.selected === 1}
+              >
+                One
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => this.onRadioButtonClick(2, client)}
+                active={this.state.selected === 2}
+              >
+                Two
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => this.onRadioButtonClick(3, client)}
+                active={this.state.selected === 3}
+              >
+                Three
+              </Button>
+            </ButtonGroup>
+          </div>
+        )}
+      </ApolloConsumer>
     );
   }
 }
