@@ -17,7 +17,13 @@ const httpLink = new HttpLink({
 
 const cache = new InMemoryCache();
 
-const stateLink = withClientState({cache, resolvers: {}});
+const stateLink = withClientState({
+  cache,
+  resolvers: {},
+  defaults: {
+    selectedRadioButton: 1
+  }
+});
 
 const client = new ApolloClient({
   cache,

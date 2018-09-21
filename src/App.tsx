@@ -177,18 +177,24 @@ class RadioButtons extends Component<{}, { selected: number }> {
   }
 }
 
-class SelectedButtonIndicator extends Component<{}, { selected: number }> {
-  constructor(props: {}) {
-    super(props);
-
-    this.state = { selected: 1 };
-  }
+class SelectedButtonIndicator extends Component {
+  // constructor(props: {}) {
+  //   super(props);
+  //
+  //   this.state = { selected: 1 };
+  // }
 
   render() {
     return (
-      <div>
-        <p>Selected: {this.state.selected}</p>
-      </div>
+      <SelectedRadioButtonQuery query={getSelectedRadioButtonGql}>
+        {({ loading, error, data }) => {
+           return (
+             <div>
+               <p>Selected: {data!.selectedRadioButton}</p>
+             </div>
+           );
+        }}
+      </SelectedRadioButtonQuery>
     );
   }
 }
