@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Component } from 'react';
-import { Query, ApolloConsumer } from 'react-apollo';
+import { Query } from 'react-apollo';
 
 import { getElementGql } from './graphql/queries';
 import { GetElement,
@@ -137,42 +137,48 @@ class RadioButtons extends Component<{}, { selected: number }> {
     this.state = { selected: 1 };
   }
 
-  onRadioButtonClick = (selected: number, client: ApolloClient<any>) => {
+  onRadioButtonClick(selected: number, client: ApolloClient<any>) {
     this.setState({ selected });
     client.writeData({ data: { selectedRadioButton : selected } });
   }
 
   render() {
     return (
-      <ApolloConsumer>
-        {client => (
-          <div>
-            <ButtonGroup>
-              <Button
-                color="primary"
-                onClick={() => this.onRadioButtonClick(1, client)}
-                active={this.state.selected === 1}
-              >
-                One
-              </Button>
-              <Button
-                color="primary"
-                onClick={() => this.onRadioButtonClick(2, client)}
-                active={this.state.selected === 2}
-              >
-                Two
-              </Button>
-              <Button
-                color="primary"
-                onClick={() => this.onRadioButtonClick(3, client)}
-                active={this.state.selected === 3}
-              >
-                Three
-              </Button>
-            </ButtonGroup>
-          </div>
-        )}
-      </ApolloConsumer>
+      <SelectedRadioButtonQuery query={getSelectedRadioButtonGql}>
+        {({ loading, error, data, client }) => {
+           if (loading) { return <div>Loading</div>; }
+           if (error) { return <div>Error</div>; }
+           data = data as GetSelectedRadioButton;
+
+           return (
+             <div>
+               <ButtonGroup>
+                 <Button
+                   color="primary"
+                   onClick={() => this.onRadioButtonClick(1, client)}
+                   active={data.selectedRadioButton === 1}
+                 >
+                   One
+                 </Button>
+                 <Button
+                   color="primary"
+                   onClick={() => this.onRadioButtonClick(2, client)}
+                   active={data.selectedRadioButton === 2}
+                 >
+                   Two
+                 </Button>
+                 <Button
+                   color="primary"
+                   onClick={() => this.onRadioButtonClick(3, client)}
+                   active={data.selectedRadioButton === 3}
+                 >
+                   Three
+                 </Button>
+               </ButtonGroup>
+             </div>
+           );
+        }}
+      </SelectedRadioButtonQuery>
     );
   }
 }
@@ -188,9 +194,10 @@ class SelectedButtonIndicator extends Component {
     return (
       <SelectedRadioButtonQuery query={getSelectedRadioButtonGql}>
         {({ loading, error, data }) => {
+           data = data as GetSelectedRadioButton;
            return (
              <div>
-               <p>Selected: {data!.selectedRadioButton}</p>
+               <p>Selected: {data.selectedRadioButton}</p>
              </div>
            );
         }}
