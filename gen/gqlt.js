@@ -9,12 +9,12 @@ const utils = require('./utils');
 function generateTypesForDir(dirPath, schemaPath, apolloCodegenPath) {
   const files = utils.readdirRecursiveSync(dirPath);
   const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
-    if(/\.graphql$/.test(fileToCheck)) return graphqlFiles.concat(fileToCheck);
+    if(/\.graphql$/.test(fileToCheck) && !/^.*\/local/.test(fileToCheck))
+      return graphqlFiles.concat(fileToCheck);
     return graphqlFiles;
   }, []);
-  graphqlFiles.forEach(file => generateTypesForFile(file,
-                                                    schemaPath,
-                                                    apolloCodegenPath));
+  graphqlFiles.forEach(
+    file => generateTypesForFile(file, schemaPath, apolloCodegenPath));
 }
 
 function generateTypesForFile(graphqlFilePath, schemaPath, apolloCodegenPath) {

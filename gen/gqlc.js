@@ -126,7 +126,8 @@ function writeTsFile(fileName, gqlJsonStrings) {
 function compileDir(dirPath) {
   const files = utils.readdirRecursiveSync(dirPath);
   const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
-    if(/\.graphql$/.test(fileToCheck)) return graphqlFiles.concat(fileToCheck);
+    if(/\.graphql$/.test(fileToCheck) && !/^.*\/local/.test(fileToCheck))
+      return graphqlFiles.concat(fileToCheck);
     return graphqlFiles;
   }, []);
   graphqlFiles.forEach(file => compileFile(file));

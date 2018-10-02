@@ -4,12 +4,12 @@ import * as React from 'react';
 import { Component } from 'react';
 import { Query } from 'react-apollo';
 
-import { getElementGql } from './graphql/queries';
+import { getElementGql } from './graphql/queries-land';
 import { GetElement,
-         GetElementVariables } from './graphql/queries-types';
+         GetElementVariables } from './graphql/queries-land-types';
 
-import { getElementsGql } from './graphql/queries';
-import { GetElements } from './graphql/queries-types';
+import { getElementsGql } from './graphql/queries-land';
+import { GetElements } from './graphql/queries-land-types';
 
 import SortableTree,
        { FullTree } from 'react-sortable-tree';
