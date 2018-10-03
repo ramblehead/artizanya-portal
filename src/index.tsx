@@ -2,6 +2,26 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
+
+import { resolvers as localResolvers,
+         defaults as localDefaults } from './graphql/local-resolvers';
+
+// const localSchemaString =
+//   fs.readFileSync(path.resolve(__dirname, 'graphql/local.graphql'), 'utf8');
+
+const localSchemaString = `
+# Hey Emacs, this is -*- coding: utf-8 -*-
+
+type Query {
+  selectedRadioButton: Number!
+}
+
+schema {
+  query: Query
+}
+`;
+
+
 import './index.css';
 
 import { ApolloProvider } from 'react-apollo';
@@ -19,10 +39,9 @@ const cache = new InMemoryCache();
 
 const stateLink = withClientState({
   cache,
-  resolvers: {},
-  defaults: {
-    selectedRadioButton: 1
-  }
+  resolvers: localResolvers,
+  defaults: localDefaults,
+  typeDefs: localSchemaString
 });
 
 const client = new ApolloClient({
