@@ -4,23 +4,8 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
 import { resolvers as localResolvers,
-         defaults as localDefaults } from './graphql/local-resolvers';
-
-// const localSchemaString =
-//   fs.readFileSync(path.resolve(__dirname, 'graphql/local.graphql'), 'utf8');
-
-const localSchemaString = `
-# Hey Emacs, this is -*- coding: utf-8 -*-
-
-type Query {
-  selectedRadioButton: Number!
-}
-
-schema {
-  query: Query
-}
-`;
-
+         defaults as localDefaults,
+         typeDefs as localTypeDefs } from './graphql/client-state';
 
 import './index.css';
 
@@ -41,7 +26,7 @@ const stateLink = withClientState({
   cache,
   resolvers: localResolvers,
   defaults: localDefaults,
-  typeDefs: localSchemaString
+  typeDefs: localTypeDefs
 });
 
 const client = new ApolloClient({
