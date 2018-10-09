@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
 
 const utils = require('./utils');
 
-function generateTypesForDir(dirPath, schemaPath, apolloCodegenPath) {
+function generateTypesForDir(dirPath, schemaPath, apolloPath) {
   const files = utils.readdirRecursiveSync(dirPath);
   const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
     if(/\.graphql$/.test(fileToCheck) && !/^.*\/local/.test(fileToCheck))
@@ -14,17 +14,19 @@ function generateTypesForDir(dirPath, schemaPath, apolloCodegenPath) {
     return graphqlFiles;
   }, []);
   graphqlFiles.forEach(
-    file => generateTypesForFile(file, schemaPath, apolloCodegenPath));
+    file => generateTypesForFile(file, schemaPath, apolloPath));
 }
 
-function generateTypesForFile(graphqlFilePath, schemaPath, apolloCodegenPath) {
+function generateTypesForFile(graphqlFilePath, schemaPath, apolloPath) {
   const outFilePath = graphqlFilePath.replace(/(\.graphql)$/, '-types.ts');
   console.log(path.resolve(outFilePath));
-  return execSync(apolloCodegenPath +
-                  ' generate ' + graphqlFilePath +
-                  ' --schema ' + schemaPath +
-                  ' --target typescript' +
-                  ' --output ' + outFilePath,
+  return execSync(apolloPath + ' codegen:generate ' +
+                  ' --queries="' + graphqlFilePath + '"' +
+                  // ' --clientSchema="../src/client-state.graphql"' +
+                  ' --schema="' + schemaPath + '"' +
+                  ' --target=typescript ' +
+                  '--outputFlat ' +
+                  outFilePath,
                   { encoding: 'utf8' });
 }
 
