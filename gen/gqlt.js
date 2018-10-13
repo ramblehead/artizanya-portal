@@ -6,7 +6,9 @@ const { execSync } = require('child_process');
 
 const utils = require('./utils');
 
-function generateTypesForDir(dirPath, schemaPath, apolloPath) {
+function generateTypesForDir(
+  dirPath, schemaPath, clientSchemaPath, apolloPath)
+{
   const files = utils.readdirRecursiveSync(dirPath);
   const graphqlFiles = files.reduce((graphqlFiles, fileToCheck) => {
     if(/\.graphql$/.test(fileToCheck) && !/^.*\/local/.test(fileToCheck))
@@ -14,15 +16,19 @@ function generateTypesForDir(dirPath, schemaPath, apolloPath) {
     return graphqlFiles;
   }, []);
   graphqlFiles.forEach(
-    file => generateTypesForFile(file, schemaPath, apolloPath));
+    file => generateTypesForFile(
+      file, schemaPath, clientSchemaPath, apolloPath));
 }
 
-function generateTypesForFile(graphqlFilePath, schemaPath, apolloPath) {
+function generateTypesForFile(
+  graphqlFilePath, schemaPath, clientSchemaPath, apolloPath)
+{
   const outFilePath = graphqlFilePath.replace(/(\.graphql)$/, '-types.ts');
   console.log(path.resolve(outFilePath));
+  // see https://github.com/fenech/apollo-cli-example
   return execSync(apolloPath + ' codegen:generate ' +
                   ' --queries="' + graphqlFilePath + '"' +
-                  // ' --clientSchema="../src/client-state.graphql"' +
+                  ' --clientSchema="' + clientSchemaPath + '"' +
                   ' --schema="' + schemaPath + '"' +
                   ' --target=typescript ' +
                   '--outputFlat ' +
