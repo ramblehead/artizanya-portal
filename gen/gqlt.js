@@ -1,10 +1,20 @@
 // Hey Emacs, this is -*- coding: utf-8 -*-
 /* global require, exports */
 
+const fs = require('mz/fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
 const utils = require('./utils');
+
+function extractClientSchema(typeDefsFilePath, clientSchemaPath) {
+  let clientStateString = fs.readFileSync(typeDefsFilePath, 'utf8');
+  let clientStateGraphqlString = '';
+  let regExp = /const typeDefs = `\n([\s\S]*)`;/;
+  let m = regExp.exec(clientStateString);
+  if(m) clientStateGraphqlString = m[1];
+  fs.writeFileSync(clientSchemaPath, clientStateGraphqlString);
+}
 
 function generateTypesForDir(
   dirPath, schemaPath, clientSchemaPath, apolloPath)
@@ -30,11 +40,12 @@ function generateTypesForFile(
                   ' --queries="' + graphqlFilePath + '"' +
                   ' --clientSchema="' + clientSchemaPath + '"' +
                   ' --schema="' + schemaPath + '"' +
-                  ' --target=typescript ' +
-                  '--outputFlat ' +
-                  outFilePath,
+                  ' --target=typescript' +
+                  ' --outputFlat' +
+                  ' ' + outFilePath,
                   { encoding: 'utf8' });
 }
 
 exports.generateTypesForDir = generateTypesForDir;
 exports.generateTypesForFile = generateTypesForFile;
+exports.extractClientSchema = extractClientSchema;
