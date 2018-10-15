@@ -16,7 +16,7 @@ import SortableTree,
 
 import { Button, ButtonGroup } from 'reactstrap';
 
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-sortable-tree/style.css';
@@ -118,15 +118,18 @@ class ElementY extends Component<GetElementVariables, {}> {
   }
 }
 
-const getSelectedRadioButtonGql = gql`
-{
-  selectedRadioButton @client
-}
-`;
+import { getSelectedRadioButtonGql } from './graphql/client';
+import { GetSelectedRadioButton } from './graphql/client-types';
 
-interface GetSelectedRadioButton {
-  selectedRadioButton: number;
-}
+// const getSelectedRadioButtonGql = gql`
+// {
+//   selectedRadioButton @client
+// }
+// `;
+//
+// interface GetSelectedRadioButton {
+//   selectedRadioButton: number;
+// }
 
 class SelectedRadioButtonQuery extends Query<GetSelectedRadioButton, {}> {}
 

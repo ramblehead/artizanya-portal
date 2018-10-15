@@ -8,6 +8,7 @@ const { execSync } = require('child_process');
 const utils = require('./utils');
 
 function extractClientSchema(typeDefsFilePath, clientSchemaPath) {
+  console.log(path.resolve(clientSchemaPath));
   let clientStateString = fs.readFileSync(typeDefsFilePath, 'utf8');
   let clientStateGraphqlString = '';
   let regExp = /const typeDefs = `\n([\s\S]*)`;/;
