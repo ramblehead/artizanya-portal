@@ -133,15 +133,8 @@ import { GetSelectedRadioButton } from './graphql/client-types';
 
 class SelectedRadioButtonQuery extends Query<GetSelectedRadioButton, {}> {}
 
-class RadioButtons extends Component<{}, { selected: number }> {
-  constructor(props: {}) {
-    super(props);
-
-    this.state = { selected: 1 };
-  }
-
+class RadioButtons extends Component {
   onRadioButtonClick(selected: number, client: ApolloClient<any>) {
-    this.setState({ selected });
     client.writeData({ data: { selectedRadioButton : selected } });
   }
 
