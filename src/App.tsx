@@ -8,8 +8,10 @@ import { getElementGql } from './graphql/land';
 import { GetElement,
          GetElementVariables } from './graphql/land-types';
 
-import { getElementsGql } from './graphql/land';
-import { GetElements } from './graphql/land-types';
+import { getProcessGql } from './graphql/land';
+import { GetProcess,
+         // GetProcessVariables
+} from './graphql/land-types';
 
 import SortableTree,
        { FullTree } from 'react-sortable-tree';
@@ -28,7 +30,7 @@ import { ApolloClient } from 'apollo-client';
 
 interface TreeState extends FullTree {}
 
-class ElementsQuery extends Query<GetElements, {}> {}
+class ElementsQuery extends Query<GetProcess, {}> {}
 
 class ElementsTree extends Component<{}, TreeState> {
   // constructor() {
@@ -45,24 +47,59 @@ class ElementsTree extends Component<{}, TreeState> {
 
   render() {
     return (
-      <ElementsQuery query={getElementsGql}>
+      <ElementsQuery query={getProcessGql} variables={{ id: '0000' }}>
         {({ loading, error, data }) => {
            if (loading) { return <div>Loading</div>; }
            if (error) { return <div>Error</div>; }
-           data = data as GetElements;
+           data = data as GetProcess;
+
+           const process = data.process!;
 
            this.state = {
              treeData: []
            };
 
-           let elements = data.elements;
-           for(let element of elements) {
-             this.state.treeData.push({
-               id: element.id,
-               title: element.name,
-               subtitle: element.description
+           this.state.treeData.push({
+             id: process.id,
+             title: process.name,
+             children: [{
+               title: 'Output Components',
+               children: [],
+               expanded: true,
+             }, {
+               title: 'Input Components',
+               children: [],
+               expanded: true,
+             }],
+             expanded: true,
+           });
+
+           let outComponents = this.state.treeData[0].children![0].children!;
+
+           for(let component of process.outComponents) {
+             outComponents.push({
+               id: component.id,
+               title: component.name,
              });
            }
+
+           let inComponents = this.state.treeData[0].children![1].children!;
+
+           for(let component of process.inComponents) {
+             inComponents.push({
+               id: component.id,
+               title: component.name,
+             });
+           }
+
+           // let elements = data.elements;
+           // for(let element of elements) {
+           //   this.state.treeData.push({
+           //     id: element.id,
+           //     title: element.name,
+           //     subtitle: element.description
+           //   });
+           // }
 
            return (
              <div style={{ height: 400 }}>

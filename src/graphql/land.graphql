@@ -8,10 +8,17 @@ query GetElement($id: String!) {
   }
 }
 
-query GetElements {
-  elements {
+query GetProcess($id: String!) {
+  process(id: $id) {
     id
     name
-    description
+    inComponents {
+      id
+      name
+    }
+    outComponents {
+      id
+      name
+    }
   }
 }
