@@ -10,8 +10,7 @@ import { GetElement,
 
 import { getProcessGql } from './graphql/land';
 import { GetProcess,
-         // GetProcessVariables
-} from './graphql/land-types';
+         GetProcessVariables } from './graphql/land-types';
 
 import SortableTree,
        { FullTree } from 'react-sortable-tree';
@@ -30,9 +29,17 @@ import { ApolloClient } from 'apollo-client';
 
 interface TreeState extends FullTree {}
 
-class ElementsQuery extends Query<GetProcess, {}> {}
+class ElementsQuery extends Query<GetProcess, GetProcessVariables> {}
 
-class ElementsTree extends Component<{}, TreeState> {
+class ElementsTree extends Component<GetProcessVariables, TreeState> {
+  // constructor(props: GetProcessVariables) {
+  //   super(props);
+  //
+  //   this.state = {
+  //     treeData: []
+  //   };
+  // }
+
   // constructor() {
   //   super({treeData: [], onChange: treeData => {}});
   // }
@@ -47,7 +54,7 @@ class ElementsTree extends Component<{}, TreeState> {
 
   render() {
     return (
-      <ElementsQuery query={getProcessGql} variables={{ id: '0000' }}>
+      <ElementsQuery query={getProcessGql} variables={{ id: this.props.id }}>
         {({ loading, error, data }) => {
            if (loading) { return <div>Loading</div>; }
            if (error) { return <div>Error</div>; }
@@ -92,17 +99,8 @@ class ElementsTree extends Component<{}, TreeState> {
              });
            }
 
-           // let elements = data.elements;
-           // for(let element of elements) {
-           //   this.state.treeData.push({
-           //     id: element.id,
-           //     title: element.name,
-           //     subtitle: element.description
-           //   });
-           // }
-
            return (
-             <div style={{ height: 400 }}>
+             <div style={{ height: 600 }}>
                <SortableTree
                  treeData={this.state.treeData}
                  onChange={treeData => this.setState({ treeData })}
@@ -254,7 +252,7 @@ class App extends React.Component {
         </p>
         <ElementX id="0002" />
         <ElementY id="0001" />
-        <ElementsTree />
+        <ElementsTree id="0000" />
         <RadioButtons />
         <SelectedButtonIndicator />
       </div>
