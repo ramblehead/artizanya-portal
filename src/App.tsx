@@ -32,13 +32,21 @@ interface TreeState extends FullTree {}
 class ElementsQuery extends Query<GetProcess, GetProcessVariables> {}
 
 class ElementsTree extends Component<GetProcessVariables, TreeState> {
-  // constructor(props: GetProcessVariables) {
-  //   super(props);
-  //
-  //   this.state = {
-  //     treeData: []
-  //   };
-  // }
+  expanded: any;
+
+  constructor(props: GetProcessVariables) {
+    super(props);
+
+    this.state = {
+      treeData: []
+    };
+
+    this.expanded = {
+      main: false,
+      input: false,
+      output: false,
+    };
+  }
 
   // constructor() {
   //   super({treeData: [], onChange: treeData => {}});
@@ -72,13 +80,13 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
              children: [{
                title: 'Output Components',
                children: [],
-               expanded: true,
+               expanded: this.expanded.output,
              }, {
                title: 'Input Components',
                children: [],
-               expanded: true,
+               expanded: this.expanded.input,
              }],
-             expanded: true,
+             expanded: this.expanded.main,
            });
 
            let outComponents = this.state.treeData[0].children![0].children!;
@@ -103,7 +111,18 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
              <div style={{ height: 600 }}>
                <SortableTree
                  treeData={this.state.treeData}
-                 onChange={treeData => this.setState({ treeData })}
+                 onChange={treeData => this.setState({treeData})}
+                 onVisibilityToggle={({node, expanded}) => {
+                   if(node.title === 'Output Components') {
+                     this.expanded.output = expanded;
+                   }
+                   else if(node.title === 'Input Components') {
+                     this.expanded.input = expanded;
+                   }
+                   else {
+                     this.expanded.main = expanded;
+                   }
+                 }}
                />
              </div>
            );
