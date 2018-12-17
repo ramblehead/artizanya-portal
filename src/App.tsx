@@ -1,5 +1,7 @@
 // import gql from 'graphql-tag';
 
+// import * as _ from 'lodash';
+
 import * as React from 'react';
 import { Component } from 'react';
 import { Query } from 'react-apollo';
@@ -69,6 +71,9 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
            data = data as GetProcess;
 
            const process = data.process!;
+
+           // const prevTreeData = this.state.treeData;
+           // prevTreeData.
 
            this.state = {
              treeData: []
@@ -254,6 +259,7 @@ class SelectedButtonIndicator extends Component {
       </SelectedRadioButtonQuery>
     );
   }
+
 }
 
 const logo = require('./logo.svg');
