@@ -23,4 +23,5 @@
            (when (not ext-js) (setq tide-require-manual-setup t))
            (setq rh-js2-additional-externs
                  (append rh-js2-additional-externs '("require" "exports")))
-           (rh-setup-javascript-tide)))))
+           ;; (rh-setup-javascript-tide)
+           ))))

@@ -17,6 +17,9 @@ import { GetProcess,
 import SortableTree,
        { FullTree } from 'react-sortable-tree';
 
+// import * as treeUtils from 'react-sortable-tree/utils/tree-data-utils';
+// treeUtils.walk
+
 import { Button, ButtonGroup } from 'reactstrap';
 
 // import gql from 'graphql-tag';
@@ -34,19 +37,11 @@ interface TreeState extends FullTree {}
 class ElementsQuery extends Query<GetProcess, GetProcessVariables> {}
 
 class ElementsTree extends Component<GetProcessVariables, TreeState> {
-  expanded: any;
-
   constructor(props: GetProcessVariables) {
     super(props);
 
     this.state = {
       treeData: []
-    };
-
-    this.expanded = {
-      main: false,
-      input: false,
-      output: false,
     };
   }
 
@@ -80,24 +75,25 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
            };
 
            this.state.treeData.push({
+             collection: process.collection,
              id: process.id,
              title: process.name,
              children: [{
+               collection: 'output',
                title: 'Output Components',
                children: [],
-               expanded: this.expanded.output,
              }, {
+               collection: 'input',
                title: 'Input Components',
                children: [],
-               expanded: this.expanded.input,
              }],
-             expanded: this.expanded.main,
            });
 
            let outComponents = this.state.treeData[0].children![0].children!;
 
            for(let component of process.outComponents) {
              outComponents.push({
+               collection: process.collection,
                id: component.id,
                title: component.name,
              });
@@ -107,27 +103,19 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
 
            for(let component of process.inComponents) {
              inComponents.push({
+               collection: process.collection,
                id: component.id,
                title: component.name,
              });
            }
 
+           // onVisibilityToggle={({node, expanded}) => {
+           // }}
            return (
              <div style={{ height: 600 }}>
                <SortableTree
                  treeData={this.state.treeData}
                  onChange={treeData => this.setState({treeData})}
-                 onVisibilityToggle={({node, expanded}) => {
-                   if(node.title === 'Output Components') {
-                     this.expanded.output = expanded;
-                   }
-                   else if(node.title === 'Input Components') {
-                     this.expanded.input = expanded;
-                   }
-                   else {
-                     this.expanded.main = expanded;
-                   }
-                 }}
                />
              </div>
            );
