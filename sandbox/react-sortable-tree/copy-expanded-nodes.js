@@ -33,10 +33,6 @@ st.walk({
   ignoreCollapsed: true,
 })
 
-st.walk();
-
-st.getNodeAtPath
-
 st.
 
 // Hey Emacs, this is coding: utf-8; mode: js2; eval: (tern-mode 1);
