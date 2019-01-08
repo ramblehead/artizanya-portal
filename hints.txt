@@ -1,0 +1,7 @@
+see https://stackoverflow.com/questions/16525430/npm-check-and-update-package-if-needed
+
+Check outdated packages
+npm outdated
+
+Check and pick packages to update
+npx npm-check -u
