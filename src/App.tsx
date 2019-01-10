@@ -14,8 +14,11 @@ import { getProcessGql } from './graphql/land';
 import { GetProcess,
          GetProcessVariables } from './graphql/land-types';
 
+import * as rst from 'react-sortable-tree';
+
 import SortableTree,
        { FullTree } from 'react-sortable-tree';
+
 
 // import * as treeUtils from 'react-sortable-tree/utils/tree-data-utils';
 // treeUtils.walk
@@ -67,8 +70,7 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
 
            const process = data.process!;
 
-           // const prevTreeData = this.state.treeData;
-           // prevTreeData.
+           const prevTreeData = this.state.treeData;
 
            this.state = {
              treeData: []
@@ -108,6 +110,34 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
                title: component.name,
              });
            }
+
+           function getNodeKey({node}: rst.TreeNode & rst.TreeIndex): string {
+             if(node.collection === 'output') return 'output';
+             if(node.collection === 'input') return 'input';
+             return node.collection + '/' + node.id;
+           }
+
+           rst.walk({
+             treeData: this.state.treeData,
+             getNodeKey,
+             callback: ({node, path}: rst.FlatDataItem & rst.TreeIndex) => {
+               console.log(path);
+
+               const nodeInfo = rst.getNodeAtPath({
+                 treeData: prevTreeData,
+                 getNodeKey,
+                 path,
+                 ignoreCollapsed: false,
+               });
+
+               if(nodeInfo) {
+                 node.expanded = nodeInfo.node.expanded;
+               }
+
+             },
+             ignoreCollapsed: false,
+           });
+
 
            // onVisibilityToggle={({node, expanded}) => {
            // }}

@@ -1,6 +1,6 @@
 // Hey Emacs, this is -*- coding: utf-8 -*-
 
-st=require("react-sortable-tree");
+rst = require("react-sortable-tree");
 
 tree = [{
   collection: "processes",
@@ -10,7 +10,6 @@ tree = [{
     collection: "output",
     title: 'Output Components',
     children: [],
-    expanded: true,
   }, {
     collection: "input",
     title: 'Input Components',
@@ -20,23 +19,26 @@ tree = [{
   expanded: true,
 }]
 
-st.walk({
+function getNodeKey({node, treeIndex}) {
+  if(node.collection === "output") return "output";
+  if(node.collection === "input") return "input";
+  return node.collection + "/" + node.id;
+}
+
+rst.walk({
   treeData: tree,
-  getNodeKey: ({node, treeIndex}) => {
-    if(node.collection === "output") return "output";
-    if(node.collection === "input") return "input";
-    return node.collection + "/" + node.id;
-  },
+  getNodeKey,
   callback: ({node, treeIndex, path}) => {
     console.log(path);
   },
   ignoreCollapsed: true,
 })
 
-st.walk();
+nodeInfo = rst.getNodeAtPath({
+  treeData: tree,
+  getNodeKey,
+  path: ['processes/0000'],
+  ignoreCollapsed: true,
+})
 
-st.getNodeAtPath
-
-st.
-
-// Hey Emacs, this is coding: utf-8; mode: js2; eval: (tern-mode 1);
+!!nodeInfo.node.expanded
