@@ -35,11 +35,23 @@ import { ApolloClient } from 'apollo-client';
 // type TreeProps = ReactSortableTreeProps;
 // type TreeProps = GetElements & ReactSortableTreeProps;
 
+function getNodeKey({node}: rst.TreeNode & rst.TreeIndex): string {
+  return node.collection + '/' + node.id;
+}
+
+// type NumberOrStringArray = Array<string | number>;
+
+// interface OnVisibilityToggleData extends rst.OnVisibilityToggleData {
+//   path: NumberOrStringArray;
+// }
+
 interface TreeState extends FullTree {}
 
 class ElementsQuery extends Query<GetProcess, GetProcessVariables> {}
 
 class ElementsTree extends Component<GetProcessVariables, TreeState> {
+  // private nodesExpansion: Map<NumberOrStringArray, boolean> = new Map();
+
   constructor(props: GetProcessVariables) {
     super(props);
 
@@ -82,10 +94,12 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
              title: process.name,
              children: [{
                collection: 'output',
+               id: process.id,
                title: 'Output Components',
                children: [],
              }, {
                collection: 'input',
+               id: process.id,
                title: 'Input Components',
                children: [],
              }],
@@ -95,7 +109,7 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
 
            for(let component of process.outComponents) {
              outComponents.push({
-               collection: process.collection,
+               collection: component.collection,
                id: component.id,
                title: component.name,
              });
@@ -105,29 +119,22 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
 
            for(let component of process.inComponents) {
              inComponents.push({
-               collection: process.collection,
+               collection: component.collection,
                id: component.id,
                title: component.name,
              });
-           }
-
-           function getNodeKey({node}: rst.TreeNode & rst.TreeIndex): string {
-             if(node.collection === 'output') return 'output';
-             if(node.collection === 'input') return 'input';
-             return node.collection + '/' + node.id;
            }
 
            rst.walk({
              treeData: this.state.treeData,
              getNodeKey,
              callback: ({node, path}: rst.FlatDataItem & rst.TreeIndex) => {
-               console.log(path);
 
                const nodeInfo = rst.getNodeAtPath({
                  treeData: prevTreeData,
                  getNodeKey,
                  path,
-                 ignoreCollapsed: false,
+                 ignoreCollapsed: true,
                });
 
                if(nodeInfo) {
@@ -138,14 +145,33 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
              ignoreCollapsed: false,
            });
 
-
-           // onVisibilityToggle={({node, expanded}) => {
-           // }}
            return (
              <div style={{ height: 600 }}>
                <SortableTree
                  treeData={this.state.treeData}
-                 onChange={treeData => this.setState({treeData})}
+                 onChange={treeData => {
+                   return this.setState({treeData});
+                 }}
+                 getNodeKey={getNodeKey}
+                 /*
+                 onVisibilityToggle={
+                   (toggleData: rst.OnVisibilityToggleData & rst.TreePath) => {
+                     this.nodesExpansion.set(
+                       toggleData.path, toggleData.expanded);
+                     console.log(toggleData.path, toggleData.expanded);
+                   }
+                 }
+                 */
+                 generateNodeProps={rowInfo => ({
+                   onClick: (event: Event) => {
+                     if(event) {
+                       let el = event.target as HTMLElement;
+                       if(el.closest('.rst__rowContents')) {
+                         console.log(rowInfo.path, el.className);
+                       }
+                     }
+                   },
+                 })}
                />
              </div>
            );
