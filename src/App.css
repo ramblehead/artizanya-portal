@@ -28,5 +28,6 @@
 }
 
 .rst__rowContents {
+  user-select: none;
   cursor: pointer;
 }
