@@ -166,8 +166,10 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
                    onClick: (event: Event) => {
                      if(event) {
                        let el = event.target as HTMLElement;
-                       if(el.closest('.rst__rowContents')) {
-                         console.log(rowInfo.path, el.className);
+                       let rowContents = el.closest('.rst__rowContents');
+                       if(rowContents) {
+                         // rowContents.classList.add('selected');
+                         console.log(rowInfo.path, rowInfo.node, el.className);
                        }
                      }
                    },

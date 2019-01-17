@@ -31,3 +31,9 @@
   user-select: none;
   cursor: pointer;
 }
+
+.rst__rowContents.selected {
+  color: #fff;
+  background-color: #007bff;
+  /* border-color: #007bff; */
+}
