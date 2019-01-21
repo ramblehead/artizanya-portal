@@ -17,9 +17,9 @@ console.log('');
 console.log('Compiling graphql to gql-js files...');
 compileDir('../src');
 
-// console.log('');
-// console.log('Generating typescript types for graphql files...');
-// generateTypesForDir('../src',
-//                     './schema/land.json',
-//                     './schema/client.graphql',
-//                     '../node_modules/.bin/apollo');
+console.log('');
+console.log('Generating typescript types for graphql files...');
+generateTypesForDir('../src',
+                    './schema/land.json',
+                    './schema/client.graphql',
+                    '../node_modules/.bin/apollo');
