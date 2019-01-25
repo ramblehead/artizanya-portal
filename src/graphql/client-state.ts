@@ -2,6 +2,7 @@
 
 const typeDefs = `
 extend type Query {
+  expandedNodes: [String!]!
   selectedRadioButton: Int!
 }
 `;
@@ -10,7 +11,8 @@ const resolvers = {
 };
 
 const defaults = {
-  selectedRadioButton: 1
+  selectedRadioButton: 1,
+  expandedNodes: []
 };
 
 export {

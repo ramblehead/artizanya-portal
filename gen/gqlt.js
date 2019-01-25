@@ -37,10 +37,10 @@ function generateTypesForFile(
   const outFilePath = graphqlFilePath.replace(/(\.graphql)$/, '-types.ts');
   console.log(path.resolve(outFilePath));
   // see https://github.com/fenech/apollo-cli-example
-  return execSync(apolloPath + ' codegen:generate ' +
-                  ' --queries="' + graphqlFilePath + '"' +
+  return execSync(apolloPath + ' client:codegen ' +
+                  ' --includes="' + graphqlFilePath + '"' +
                   ' --clientSchema="' + clientSchemaPath + '"' +
-                  ' --schema="' + schemaPath + '"' +
+                  ' --localSchemaFile="' + schemaPath + '"' +
                   ' --target=typescript' +
                   ' --outputFlat' +
                   ' ' + outFilePath,
