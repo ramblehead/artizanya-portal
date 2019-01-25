@@ -42,3 +42,5 @@ nodeInfo = rst.getNodeAtPath({
 })
 
 !!nodeInfo.node.expanded
+
+rst.

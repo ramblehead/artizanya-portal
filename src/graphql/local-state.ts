@@ -1,6 +1,6 @@
 // Hey Emacs, this is -*- coding: utf-8 -*-
 
-const typeDefs = `
+const schema = `
 extend type Query {
   expandedNodes: [String!]!
   selectedRadioButton: Int!
@@ -16,7 +16,7 @@ const defaults = {
 };
 
 export {
-  typeDefs,
+  schema,
   resolvers,
   defaults
 };

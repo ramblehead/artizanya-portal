@@ -1,7 +1,7 @@
 # Hey Emacs, this is -*- coding: utf-8 -*-
 
 query GetExpandedNodes {
-  selectedRadioButton @client
+  expandedNodes @client
 }
 
 query GetSelectedRadioButton {
