@@ -17,7 +17,7 @@ function extractClientSchema(typeDefsFilePath, localSchemaPath) {
   fs.writeFileSync(localSchemaPath, clientStateGraphqlString);
 }
 
-function generateTypesForQueriesDir(
+function generateTypesForDir(
   dirPath, remoteSchemaPath, localSchemaPath, apolloPath)
 {
   const files = utils.readdirRecursiveSync(dirPath);
@@ -27,7 +27,7 @@ function generateTypesForQueriesDir(
     return graphqlFiles;
   }, []);
   graphqlFiles.forEach(
-    file => generateTypesForQueriesFile(
+    file => generateTypesForFile(
       file, remoteSchemaPath, localSchemaPath, apolloPath));
 }
 
@@ -38,7 +38,7 @@ function generateTypesForQueriesDir(
  * @param {string} localSchemaPath - Local schema file path.
  * @param {string} apolloPath - Path to apollo executable.
  */
-function generateTypesForQueriesFile(
+function generateTypesForFile(
   graphqlFilePath, remoteSchemaPath, localSchemaPath, apolloPath)
 {
   const outFilePath = graphqlFilePath.replace(/(\.graphql)$/, '-types.ts');
@@ -54,6 +54,6 @@ function generateTypesForQueriesFile(
                   { encoding: 'utf8' });
 }
 
-exports.generateTypesForQueriesDir = generateTypesForQueriesDir;
-exports.generateTypesForQueriesFile = generateTypesForQueriesFile;
+exports.generateTypesForDir = generateTypesForDir;
+exports.generateTypesForFile = generateTypesForFile;
 exports.extractClientSchema = extractClientSchema;

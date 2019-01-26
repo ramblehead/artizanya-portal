@@ -5,7 +5,10 @@
     "react"
   ],
   "plugins": {
+    "es_modules": {},
     "node": {},
-    "es_modules": {}
+    "commonjs": {},
+    "requirejs": {},
+    "node_resolve": {}
   }
 }

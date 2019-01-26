@@ -223,8 +223,8 @@ class ElementY extends Component<GetElementVariables, {}> {
   }
 }
 
-import { getSelectedRadioButtonGql } from './graphql/client';
-import { GetSelectedRadioButton } from './graphql/client-types';
+import { getSelectedRadioButtonGql } from './graphql/local';
+import { GetSelectedRadioButton } from './graphql/local-types';
 
 // const getSelectedRadioButtonGql = gql`
 // {
