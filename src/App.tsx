@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { Component } from 'react';
-import { Query } from 'react-apollo';
+import { Query, QueryResult } from 'react-apollo';
 
 import { getElementGql } from './graphql/land';
 import { GetElement,
@@ -72,112 +72,92 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
   //   };
   // }
 
+  renderElementsQuery = (queryResult: QueryResult) => {
+    if (queryResult.loading) { return <div>Loading</div>; }
+    if (queryResult.error) { return <div>Error</div>; }
+    const data = queryResult.data as GetProcess;
+
+    const process = data.process!;
+
+    this.state = {
+      treeData: []
+    };
+
+    this.state.treeData.push({
+      collection: process.collection,
+      id: process.id,
+      title: process.name,
+      children: [{
+        collection: 'output',
+        id: process.id,
+        title: 'Output Components',
+        children: [],
+      }, {
+        collection: 'input',
+        id: process.id,
+        title: 'Input Components',
+        children: [],
+      }],
+    });
+
+    let outComponents = this.state.treeData[0].children![0].children!;
+
+    for(let component of process.outComponents) {
+      outComponents.push({
+        collection: component.collection,
+        id: component.id,
+        title: component.name,
+      });
+    }
+
+    let inComponents = this.state.treeData[0].children![1].children!;
+
+    for(let component of process.inComponents) {
+      inComponents.push({
+        collection: component.collection,
+        id: component.id,
+        title: component.name,
+      });
+    }
+
+    return (
+      <div style={{ height: 600 }}>
+        <SortableTree
+          treeData={this.state.treeData}
+          onChange={treeData => {
+            return this.setState({treeData});
+          }}
+          getNodeKey={getNodeKey}
+          /*
+          onVisibilityToggle={
+            (toggleData: rst.OnVisibilityToggleData & rst.TreePath) => {
+              this.nodesExpansion.set(
+                toggleData.path, toggleData.expanded);
+              console.log(toggleData.path, toggleData.expanded);
+            }
+          }
+          */
+          generateNodeProps={rowInfo => ({
+            onClick: (event: Event) => {
+              if(event) {
+                let el = event.target as HTMLElement;
+                let rowContents = el.closest('.rst__rowContents');
+                if(rowContents) {
+                  // rowContents.classList.add('selected');
+                  console.log(rowInfo.path, rowInfo.node, el.className);
+                }
+              }
+            },
+          })}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <ElementsQuery query={getProcessGql} variables={{ id: this.props.id }}>
-        {({ loading, error, data }) => {
-           if (loading) { return <div>Loading</div>; }
-           if (error) { return <div>Error</div>; }
-           data = data as GetProcess;
-
-           const process = data.process!;
-
-           const prevTreeData = this.state.treeData;
-
-           this.state = {
-             treeData: []
-           };
-
-           this.state.treeData.push({
-             collection: process.collection,
-             id: process.id,
-             title: process.name,
-             children: [{
-               collection: 'output',
-               id: process.id,
-               title: 'Output Components',
-               children: [],
-             }, {
-               collection: 'input',
-               id: process.id,
-               title: 'Input Components',
-               children: [],
-             }],
-           });
-
-           let outComponents = this.state.treeData[0].children![0].children!;
-
-           for(let component of process.outComponents) {
-             outComponents.push({
-               collection: component.collection,
-               id: component.id,
-               title: component.name,
-             });
-           }
-
-           let inComponents = this.state.treeData[0].children![1].children!;
-
-           for(let component of process.inComponents) {
-             inComponents.push({
-               collection: component.collection,
-               id: component.id,
-               title: component.name,
-             });
-           }
-
-           rst.walk({
-             treeData: this.state.treeData,
-             getNodeKey,
-             callback: ({node, path}: rst.FlatDataItem & rst.TreeIndex) => {
-
-               const nodeInfo = rst.getNodeAtPath({
-                 treeData: prevTreeData,
-                 getNodeKey,
-                 path,
-                 ignoreCollapsed: true,
-               });
-
-               if(nodeInfo) {
-                 node.expanded = nodeInfo.node.expanded;
-               }
-
-             },
-             ignoreCollapsed: false,
-           });
-
-           return (
-             <div style={{ height: 600 }}>
-               <SortableTree
-                 treeData={this.state.treeData}
-                 onChange={treeData => {
-                   return this.setState({treeData});
-                 }}
-                 getNodeKey={getNodeKey}
-                 /*
-                 onVisibilityToggle={
-                   (toggleData: rst.OnVisibilityToggleData & rst.TreePath) => {
-                     this.nodesExpansion.set(
-                       toggleData.path, toggleData.expanded);
-                     console.log(toggleData.path, toggleData.expanded);
-                   }
-                 }
-                 */
-                 generateNodeProps={rowInfo => ({
-                   onClick: (event: Event) => {
-                     if(event) {
-                       let el = event.target as HTMLElement;
-                       let rowContents = el.closest('.rst__rowContents');
-                       if(rowContents) {
-                         // rowContents.classList.add('selected');
-                         console.log(rowInfo.path, rowInfo.node, el.className);
-                       }
-                     }
-                   },
-                 })}
-               />
-             </div>
-           );
-        }}
+        {this.renderElementsQuery}
       </ElementsQuery>
     );
   }
