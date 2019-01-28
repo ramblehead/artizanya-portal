@@ -10,6 +10,12 @@ import { getElementGql } from './graphql/land';
 import { GetElement,
          GetElementVariables } from './graphql/land-types';
 
+import { getExpandedNodesGql,
+         getSelectedRadioButtonGql } from './graphql/local';
+import { GetExpandedNodes,
+         GetExpandedNodes_expandedNodePaths,
+         GetSelectedRadioButton } from './graphql/local-types';
+
 import { getProcessGql } from './graphql/land';
 import { GetProcess,
          GetProcessVariables } from './graphql/land-types';
@@ -47,7 +53,8 @@ function getNodeKey({node}: rst.TreeNode & rst.TreeIndex): string {
 
 interface TreeState extends FullTree {}
 
-class ElementsQuery extends Query<GetProcess, GetProcessVariables> {}
+class ProcessQuery extends Query<GetProcess, GetProcessVariables> {}
+class ExpandedNodesQuery extends Query<GetExpandedNodes> {}
 
 class ElementsTree extends Component<GetProcessVariables, TreeState> {
   // private nodesExpansion: Map<NumberOrStringArray, boolean> = new Map();
@@ -72,12 +79,24 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
   //   };
   // }
 
-  renderElementsQuery = (queryResult: QueryResult) => {
-    if (queryResult.loading) { return <div>Loading</div>; }
-    if (queryResult.error) { return <div>Error</div>; }
-    const data = queryResult.data as GetProcess;
+  // renderProcessQuery = (queryResult: QueryResult) => {
+  // }
 
-    const process = data.process!;
+  renderWithQueries(
+    processQueryResult: QueryResult,
+    expandedNodesQueryResult: QueryResult)
+  {
+    if (processQueryResult.loading) { return <div>Loading</div>; }
+    if (processQueryResult.error) { return <div>Error</div>; }
+
+    const processData = processQueryResult.data as GetProcess;
+    const expandedNodesData =
+      expandedNodesQueryResult.data as GetExpandedNodes;
+
+    const process = processData.process!;
+    const expandedNodePaths = expandedNodesData.expandedNodePaths;
+
+    console.log(expandedNodePaths);
 
     this.state = {
       treeData: []
@@ -120,6 +139,19 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
       });
     }
 
+    for(let nodePath of expandedNodePaths) {
+      const nodeInfo = rst.getNodeAtPath({
+        treeData: this.state.treeData,
+        getNodeKey,
+        path: nodePath.value,
+        ignoreCollapsed: false,
+      });
+
+      if(nodeInfo) {
+        nodeInfo.node.expanded = true;
+      }
+    }
+
     return (
       <div style={{ height: 600 }}>
         <SortableTree
@@ -128,15 +160,27 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
             return this.setState({treeData});
           }}
           getNodeKey={getNodeKey}
-          /*
           onVisibilityToggle={
             (toggleData: rst.OnVisibilityToggleData & rst.TreePath) => {
-              this.nodesExpansion.set(
-                toggleData.path, toggleData.expanded);
-              console.log(toggleData.path, toggleData.expanded);
+              let client = expandedNodesQueryResult.client;
+
+              let expandedNodePath: GetExpandedNodes_expandedNodePaths = {
+                __typename: 'ExpandedNodePath',
+                value: toggleData.path as Array<string>
+              };
+
+              client.writeData({
+                data: {
+                  expandedNodePaths: [expandedNodePath]
+                }
+              });
+
+              console.log(toggleData.path, toggleData.expanded, expandedNodePath);
+              // this.nodesExpansion.set(
+              //   toggleData.path, toggleData.expanded);
+              // console.log(toggleData.path, toggleData.expanded);
             }
           }
-          */
           generateNodeProps={rowInfo => ({
             onClick: (event: Event) => {
               if(event) {
@@ -154,11 +198,32 @@ class ElementsTree extends Component<GetProcessVariables, TreeState> {
     );
   }
 
+  renderExpandedNodesQuery(
+    processQueryResult: QueryResult,
+    expandedNodesQueryResult: QueryResult)
+  {
+    return this.renderWithQueries(
+      processQueryResult, expandedNodesQueryResult);
+  }
+
+  renderProcessQuery(processQueryResult: QueryResult) {
+    return (
+      <ExpandedNodesQuery query={getExpandedNodesGql}>
+        {(expandedNodesQueryResult) => {
+           return this.renderExpandedNodesQuery(
+             processQueryResult, expandedNodesQueryResult);
+        }}
+      </ExpandedNodesQuery>
+    );
+  }
+
   render() {
     return (
-      <ElementsQuery query={getProcessGql} variables={{ id: this.props.id }}>
-        {this.renderElementsQuery}
-      </ElementsQuery>
+      <ProcessQuery query={getProcessGql} variables={{ id: this.props.id }}>
+        {(processQueryResult) => {
+           return this.renderProcessQuery(processQueryResult);
+        }}
+      </ProcessQuery>
     );
   }
 }
@@ -202,9 +267,6 @@ class ElementY extends Component<GetElementVariables, {}> {
     );
   }
 }
-
-import { getSelectedRadioButtonGql } from './graphql/local';
-import { GetSelectedRadioButton } from './graphql/local-types';
 
 // const getSelectedRadioButtonGql = gql`
 // {

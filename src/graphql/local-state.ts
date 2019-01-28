@@ -1,8 +1,12 @@
 // Hey Emacs, this is -*- coding: utf-8 -*-
 
 const schema = `
+type ExpandedNodePath {
+  value: [String!]!
+}
+
 extend type Query {
-  expandedNodes: [String!]!
+  expandedNodePaths: [ExpandedNodePath!]!
   selectedRadioButton: Int!
 }
 `;
@@ -12,7 +16,7 @@ const resolvers = {
 
 const defaults = {
   selectedRadioButton: 1,
-  expandedNodes: []
+  expandedNodePaths: []
 };
 
 export {
