@@ -46,7 +46,10 @@ function generateTypesForFile(
   console.log(path.resolve(outFilePath));
   // see https://github.com/fenech/apollo-cli-example
   return execSync(apolloPath + ' client:codegen' +
-                  ' --outputFlat --addTypename' +
+                  ' --outputFlat --addTypename --passthroughCustomScalars' +
+                  // ' --namespace="scalars"' +
+                  ' --customScalarsPrefix="scalars."' +
+                  // ' --globalTypesFile="xxx.ts"' +
                   ' --includes="' + includesGlob + '"' +
                   ' --localSchemaFile="' + remoteSchemaPath + '"' +
                   ' --target=typescript' +

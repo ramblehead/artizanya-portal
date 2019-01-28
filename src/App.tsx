@@ -56,7 +56,7 @@ interface TreeState extends FullTree {}
 class ProcessQuery extends Query<GetProcess, GetProcessVariables> {}
 class ExpandedNodesQuery extends Query<GetExpandedNodes> {}
 
-class ElementsTree extends Component<GetProcessVariables, TreeState> {
+class ProcessTree extends Component<GetProcessVariables, TreeState> {
   // private nodesExpansion: Map<NumberOrStringArray, boolean> = new Map();
 
   constructor(props: GetProcessVariables) {
@@ -365,7 +365,7 @@ class App extends React.Component {
         </p>
         <ElementX id="0002" />
         <ElementY id="0001" />
-        <ElementsTree id="0000" />
+        <ProcessTree id="0000" />
         <RadioButtons />
         <SelectedButtonIndicator />
       </div>
