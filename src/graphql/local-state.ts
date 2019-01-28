@@ -4,21 +4,21 @@
 
 import { GraphQLScalarType, ValueNode } from 'graphql';
 
-export type NumberOrString = number | string;
+export type IntOrString = number | string;
 
-let mumberOrStringTypeCondition =
-  (value: string | number): string | number | null => {
+let intOrStringTypeConditioner =
+  (value: string | number) => {
     if(Number.isInteger(value as number) ||
        typeof value === 'string') return value;
     return null;
   };
 
-export const mumberOrStringType = new GraphQLScalarType({
-  name: 'NumberOrString',
+export const intOrStringType = new GraphQLScalarType({
+  name: 'IntOrString',
   description: 'Value of this type can hold both integer numbers and strings.',
-  serialize: mumberOrStringTypeCondition,
-  parseValue: mumberOrStringTypeCondition,
-  parseLiteral(valueNode: ValueNode): string | number | null {
+  serialize: intOrStringTypeConditioner,
+  parseValue: intOrStringTypeConditioner,
+  parseLiteral(valueNode: ValueNode) {
     if(valueNode.kind === 'IntValue') return parseInt(valueNode.value, 10);
     if(valueNode.kind === 'StringValue') return valueNode.value;
     return null;
@@ -30,10 +30,10 @@ export const mumberOrStringType = new GraphQLScalarType({
 // /b/{ Local GraphQL Schema and Defaults
 
 const schema = `
-scalar NumberOrString
+scalar IntOrString
 
 type ProcessTreeItemLocalState {
-  path: [NumberOrString!]!
+  path: [IntOrString!]!
   expanded: Boolean!
 }
 
@@ -50,7 +50,7 @@ extend type Query {
 `;
 
 const resolvers = {
-  NumberOrString: mumberOrStringType
+  IntOrString: intOrStringType
 };
 
 const defaults = {
