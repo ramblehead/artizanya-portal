@@ -185,11 +185,19 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
             (toggleData: rst.OnVisibilityToggleData & rst.TreePath) => {
               let client = getExpandedNodesResult.client;
 
+              // let data = getExpandedNodesResult.data as GetExpandedNodes;
+              // data.treeItem.path = toggleData.path as string[];
+              // client.writeData({data});
+
+              let treeItem = {
+                __typename: 'ProcessTreeItemLocalState',
+                path: toggleData.path as string[],
+                expanded: toggleData.expanded
+              };
+
               client.writeData({
                 data: {
-                  treeItem: {
-                    path: toggleData.path as string[]
-                  }
+                  treeItem
                 }
               });
 

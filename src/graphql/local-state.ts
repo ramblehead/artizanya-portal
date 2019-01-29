@@ -63,6 +63,7 @@ extend type Query {
 
 const defaults = {
   treeItem: {
+    __typename: 'ProcessTreeItemLocalState',
     path: [],
     expanded: false
   },
