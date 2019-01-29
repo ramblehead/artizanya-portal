@@ -50,43 +50,26 @@ export type IntOrString = number | string;
 // /b/{ Local GraphQL Schema and Defaults
 
 const schema = `
-scalar IntOrString
-
 type ProcessTreeItemLocalState {
   path: [String!]!
   expanded: Boolean!
 }
 
-type ProcessTreeLocalState {
-  treeItems: [ProcessTreeItemLocalState!]!
-  activeItemPath: String
-  selectedItemsPath: [String!]!
-}
-
 extend type Query {
-  processTreeLocalState: ProcessTreeLocalState!
+  treeItem: ProcessTreeItemLocalState!
   selectedRadioButton: Int!
 }
 `;
 
-const resolvers = {
-  // IntOrString: intOrStringType
-  // IntOrString: ''
-
-  // processTreeLocalState: {
-  //   treeItems: [],
-  //   activeItemPath: null,
-  //   selectedItemsPath: []
-  // },
-};
-
 const defaults = {
-  processTreeLocalState: {
-    treeItems: [],
-    activeItemPath: null,
-    selectedItemsPath: []
+  treeItem: {
+    path: [],
+    expanded: false
   },
   selectedRadioButton: 1
+};
+
+const resolvers = {
 };
 
 export {

@@ -36,6 +36,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-sortable-tree/style.css';
 import './App.css';
 import { ApolloClient } from 'apollo-client';
+// import { debug } from 'util';
 
 // type TreeProps = ReactSortableTreeProps;
 // type TreeProps = GetElements & ReactSortableTreeProps;
@@ -85,17 +86,27 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
     processQueryResult: QueryResult,
     getExpandedNodesResult: QueryResult)
   {
-    if (processQueryResult.loading) { return <div>Loading</div>; }
-    if (processQueryResult.error) { return <div>Error</div>; }
+    if(processQueryResult.loading ||
+       getExpandedNodesResult.loading)
+    {
+      return <div>Loading</div>;
+    }
+
+    if(processQueryResult.error ||
+       getExpandedNodesResult.error)
+    {
+      return <div>Error</div>;
+    }
 
     const processData = processQueryResult.data as GetProcess;
+    const process = processData.process!;
+
     const expandedNodesData =
       getExpandedNodesResult.data as GetExpandedNodes;
+    const expandedNodesPath = expandedNodesData.treeItem.path;
+    // const processTreeItems = expandedNodesData.processTreeLocalState.treeItems;
 
-    const process = processData.process!;
-    const processTreeItems = expandedNodesData.processTreeLocalState.treeItems;
-
-    console.log(processTreeItems);
+    // console.log(expandedNodesData);
 
     this.state = {
       treeData: []
@@ -138,17 +149,28 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
       });
     }
 
-    for(let treeItem of processTreeItems) {
-      const nodeInfo = rst.getNodeAtPath({
-        treeData: this.state.treeData,
-        getNodeKey,
-        path: treeItem.path,
-        ignoreCollapsed: false,
-      });
+    // for(let treeItem of processTreeItems) {
+    //   const nodeInfo = rst.getNodeAtPath({
+    //     treeData: this.state.treeData,
+    //     getNodeKey,
+    //     path: treeItem.path,
+    //     ignoreCollapsed: false,
+    //   });
+    //
+    //   if(nodeInfo) {
+    //     nodeInfo.node.expanded = treeItem.expanded;
+    //   }
+    // }
 
-      if(nodeInfo) {
-        nodeInfo.node.expanded = treeItem.expanded;
-      }
+    const nodeInfo = rst.getNodeAtPath({
+      treeData: this.state.treeData,
+      getNodeKey,
+      path: expandedNodesPath,
+      ignoreCollapsed: false,
+    });
+
+    if(nodeInfo) {
+      nodeInfo.node.expanded = true;
     }
 
     return (
@@ -163,24 +185,15 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
             (toggleData: rst.OnVisibilityToggleData & rst.TreePath) => {
               let client = getExpandedNodesResult.client;
 
-              let treeItems = {
-                path: toggleData.path,
-                expanded: toggleData.expanded
-              };
-
-              let processTreeLocalState = {
-                treeItems,
-                activeItemPath: null,
-                selectedItemsPath: []
-              };
-
               client.writeData({
                 data: {
-                  processTreeLocalState
+                  treeItem: {
+                    path: toggleData.path as string[]
+                  }
                 }
               });
 
-              console.log(toggleData.path, toggleData.expanded, treeItems);
+              console.log(toggleData.path, toggleData.expanded);
               // this.nodesExpansion.set(
               //   toggleData.path, toggleData.expanded);
               // console.log(toggleData.path, toggleData.expanded);
@@ -215,6 +228,7 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
     return (
       <ExpandedNodesQuery query={getExpandedNodesGql}>
         {(getExpandedNodesResult) => {
+           // debugger;
            return this.renderExpandedNodesQuery(
              processQueryResult, getExpandedNodesResult);
         }}
