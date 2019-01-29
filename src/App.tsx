@@ -13,7 +13,6 @@ import { GetElement,
 import { getExpandedNodesGql,
          getSelectedRadioButtonGql } from './graphql/local';
 import { GetExpandedNodes,
-         GetExpandedNodes_expandedNodePaths,
          GetSelectedRadioButton } from './graphql/local-types';
 
 import { getProcessGql } from './graphql/land';
@@ -84,19 +83,19 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
 
   renderWithQueries(
     processQueryResult: QueryResult,
-    expandedNodesQueryResult: QueryResult)
+    getExpandedNodesResult: QueryResult)
   {
     if (processQueryResult.loading) { return <div>Loading</div>; }
     if (processQueryResult.error) { return <div>Error</div>; }
 
     const processData = processQueryResult.data as GetProcess;
     const expandedNodesData =
-      expandedNodesQueryResult.data as GetExpandedNodes;
+      getExpandedNodesResult.data as GetExpandedNodes;
 
     const process = processData.process!;
-    const expandedNodePaths = expandedNodesData.expandedNodePaths;
+    const processTreeItems = expandedNodesData.processTreeLocalState.treeItems;
 
-    console.log(expandedNodePaths);
+    console.log(processTreeItems);
 
     this.state = {
       treeData: []
@@ -139,16 +138,16 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
       });
     }
 
-    for(let nodePath of expandedNodePaths) {
+    for(let treeItem of processTreeItems) {
       const nodeInfo = rst.getNodeAtPath({
         treeData: this.state.treeData,
         getNodeKey,
-        path: nodePath.value,
+        path: treeItem.path,
         ignoreCollapsed: false,
       });
 
       if(nodeInfo) {
-        nodeInfo.node.expanded = true;
+        nodeInfo.node.expanded = treeItem.expanded;
       }
     }
 
@@ -162,20 +161,26 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
           getNodeKey={getNodeKey}
           onVisibilityToggle={
             (toggleData: rst.OnVisibilityToggleData & rst.TreePath) => {
-              let client = expandedNodesQueryResult.client;
+              let client = getExpandedNodesResult.client;
 
-              let expandedNodePath: GetExpandedNodes_expandedNodePaths = {
-                __typename: 'ExpandedNodePath',
-                value: toggleData.path as Array<string>
+              let treeItems = {
+                path: toggleData.path,
+                expanded: toggleData.expanded
+              };
+
+              let processTreeLocalState = {
+                treeItems,
+                activeItemPath: null,
+                selectedItemsPath: []
               };
 
               client.writeData({
                 data: {
-                  expandedNodePaths: [expandedNodePath]
+                  processTreeLocalState
                 }
               });
 
-              console.log(toggleData.path, toggleData.expanded, expandedNodePath);
+              console.log(toggleData.path, toggleData.expanded, treeItems);
               // this.nodesExpansion.set(
               //   toggleData.path, toggleData.expanded);
               // console.log(toggleData.path, toggleData.expanded);
@@ -200,18 +205,18 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
 
   renderExpandedNodesQuery(
     processQueryResult: QueryResult,
-    expandedNodesQueryResult: QueryResult)
+    getExpandedNodesResult: QueryResult)
   {
     return this.renderWithQueries(
-      processQueryResult, expandedNodesQueryResult);
+      processQueryResult, getExpandedNodesResult);
   }
 
   renderProcessQuery(processQueryResult: QueryResult) {
     return (
       <ExpandedNodesQuery query={getExpandedNodesGql}>
-        {(expandedNodesQueryResult) => {
+        {(getExpandedNodesResult) => {
            return this.renderExpandedNodesQuery(
-             processQueryResult, expandedNodesQueryResult);
+             processQueryResult, getExpandedNodesResult);
         }}
       </ExpandedNodesQuery>
     );

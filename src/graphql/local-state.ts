@@ -2,28 +2,48 @@
 
 // /b/{  Local GraphQL Custom Scalars
 
-import { GraphQLScalarType, ValueNode } from 'graphql';
+// import { GraphQLScalarType, ValueNode } from 'graphql';
 
 export type IntOrString = number | string;
 
-let intOrStringTypeConditioner =
-  (value: string | number) => {
-    if(Number.isInteger(value as number) ||
-       typeof value === 'string') return value;
-    return null;
-  };
+// const intOrStringTypeConditioner =
+//   (value: string | number) => {
+//     if(Number.isInteger(value as number) ||
+//        typeof value === 'string') return value;
+//     return null;
+//   };
 
-export const intOrStringType = new GraphQLScalarType({
-  name: 'IntOrString',
-  description: 'Value of this type can hold both integer numbers and strings.',
-  serialize: intOrStringTypeConditioner,
-  parseValue: intOrStringTypeConditioner,
-  parseLiteral(valueNode: ValueNode) {
-    if(valueNode.kind === 'IntValue') return parseInt(valueNode.value, 10);
-    if(valueNode.kind === 'StringValue') return valueNode.value;
-    return null;
-  }
-});
+// export const intOrStringType = new GraphQLScalarType({
+//   name: 'IntOrString',
+//   description: 'Value of this type can hold both integer numbers and strings.',
+//   serialize: intOrStringTypeConditioner,
+//   parseValue: intOrStringTypeConditioner,
+//   parseLiteral(valueNode: ValueNode) {
+//     if(valueNode.kind === 'IntValue') return parseInt(valueNode.value, 10);
+//     if(valueNode.kind === 'StringValue') return valueNode.value;
+//     return null;
+//   }
+// });
+
+// const intOrStringType = new GraphQLScalarType({
+//   name: 'IntOrString',
+//   description: 'Value of this type can hold both integer numbers and strings.',
+//   serialize(value: string | number) {
+//     if(Number.isInteger(value as number) ||
+//        typeof value === 'string') return value;
+//     return null;
+//   },
+//   parseValue(value: string | number) {
+//     if(Number.isInteger(value as number) ||
+//        typeof value === 'string') return value;
+//     return null;
+//   },
+//   parseLiteral(ast: ValueNode) {
+//     if(ast.kind === 'IntValue') return parseInt(ast.value, 10);
+//     if(ast.kind === 'StringValue') return ast.value;
+//     return null;
+//   }
+// });
 
 // /b/} Local GraphQL Custom Scalars
 
@@ -33,7 +53,7 @@ const schema = `
 scalar IntOrString
 
 type ProcessTreeItemLocalState {
-  path: [IntOrString!]!
+  path: [String!]!
   expanded: Boolean!
 }
 
@@ -44,17 +64,28 @@ type ProcessTreeLocalState {
 }
 
 extend type Query {
-  processTreeLocalState: [ProcessTreeLocalState!]!
+  processTreeLocalState: ProcessTreeLocalState!
   selectedRadioButton: Int!
 }
 `;
 
 const resolvers = {
-  IntOrString: intOrStringType
+  // IntOrString: intOrStringType
+  // IntOrString: ''
+
+  // processTreeLocalState: {
+  //   treeItems: [],
+  //   activeItemPath: null,
+  //   selectedItemsPath: []
+  // },
 };
 
 const defaults = {
-  processTreeLocalState: [],
+  processTreeLocalState: {
+    treeItems: [],
+    activeItemPath: null,
+    selectedItemsPath: []
+  },
   selectedRadioButton: 1
 };
 
