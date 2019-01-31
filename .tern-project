@@ -1,14 +1,11 @@
 {
-  "ecmaVersion": 6,
+  "dependencyBudget": 20000000,
   "libs": [
     "browser",
     "react"
   ],
   "plugins": {
     "es_modules": {},
-    "node": {},
-    "commonjs": {},
-    "requirejs": {},
-    "node_resolve": {}
+    "node": {}
   }
 }
