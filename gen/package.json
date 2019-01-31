@@ -1,8 +1,0 @@
-{
-  "name": "artizanya-portal-gen",
-  "version": "0.0.0",
-  "private": true,
-  "dependencies": {
-    "apollo": "^2.1.9"
-  }
-}

@@ -5,3 +5,6 @@ npm outdated
 
 Check and pick packages to update
 npx npm-check -u
+
+npm ls graphql
+npm dedup
