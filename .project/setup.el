@@ -25,4 +25,4 @@
            (unless ext-js (setq tide-require-manual-setup t))
            (setq rh-js2-additional-externs
                  (append rh-js2-additional-externs '("require" "exports")))
-           (tern-mode 1)))))
+           (rh-setup-javascript-tern-tide)))))

@@ -8,10 +8,15 @@ const gql = require('graphql-tag');
 
 const utils = require('./utils');
 
+/**
+ * Extracts GraphQL definitions (query, mutation, fragment etc.)
+ * @param {string} graphqlString
+ */
 function extractDefinitions(graphqlString) {
-  const mr = xRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
-    valueNames: ['between', 'left', 'match', 'right']
-  });
+  const mr = /** @type {xRegExp.MatchRecursiveResult[]} */ (
+    xRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
+      valueNames: ['between', 'left', 'match', 'right']
+    }));
 
   let definitions = [];
 
