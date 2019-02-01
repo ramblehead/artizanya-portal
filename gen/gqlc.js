@@ -36,22 +36,42 @@ function extractDefinitions(graphqlString) {
   return definitions;
 }
 
+/**
+ * @typedef GraphqlOperationDesc
+ * @prop {string} name
+ * @prop {string} definition
+ * @prop {string[]} fragmentNames
+ */
+
+/**
+ * Fliter GraphQL operations (query, mutation) from GraphQL definitions
+ * @param {string[]} definitions
+ */
 function filterOperations(definitions) {
-  return definitions.reduce((result, operation) => {
-    let regExp = /\s*(query|mutation)[\s\n\r]+([^\s\(\{)]+)[^]*{/;
-    let m = regExp.exec(operation);
-    if(m) {
-      let name = utils.lowerCaseInitial(m[2]) + 'Gql';
-      result.push({
-        name,
-        definition: operation,
-        fragmentNames: findFragmentNames(operation)
-      });
-    }
-    return result;
-  }, []);
+  return definitions.reduce(
+    /**
+     * @param {GraphqlOperationDesc[]} result
+     * @param {string} operation
+     */
+    (result, operation) => {
+      let regExp = /\s*(query|mutation)[\s\n\r]+([^\s\(\{)]+)[^]*{/;
+      let m = regExp.exec(operation);
+      if(m) {
+        let name = utils.lowerCaseInitial(m[2]) + 'Gql';
+        result.push({
+          name,
+          definition: operation,
+          fragmentNames: findFragmentNames(operation)
+        });
+      }
+      return result;
+    }, []);
 }
 
+/**
+ * Fliter GraphQL operations (query, mutation) from GraphQL definitions
+ * @param {string} operation
+ */
 function findFragmentNames(operation) {
   let result = [];
   let regExp = /\.\.\.[\s\n\r]*(\S+)/g;
@@ -63,16 +83,25 @@ function findFragmentNames(operation) {
   return result;
 }
 
+/**
+ * Fliter GraphQL operations (query, mutation) from GraphQL definitions
+ * @param {string[]} definitions
+ */
 function filterFragments(definitions) {
-  return definitions.reduce((result, operation) => {
-    let regExp = /\s*(fragment)[\s\n\r]+(\S+)\s+on\s+(\S+)\s*\{/;
-    let m = regExp.exec(operation);
-    if(m) {
-      let fragmentName = m[2];
-      result[fragmentName] = operation;
-    }
-    return result;
-  }, {});
+  return definitions.reduce(
+    /**
+     * @param {Record<string, string>} result
+     * @param {string} operation
+     */
+    (result, operation) => {
+      let regExp = /\s*(fragment)[\s\n\r]+(\S+)\s+on\s+(\S+)\s*\{/;
+      let m = regExp.exec(operation);
+      if(m) {
+        let fragmentName = m[2];
+        result[fragmentName] = operation;
+      }
+      return result;
+    }, {});
 }
 
 function makeGqlStrings(operations, fragments) {
