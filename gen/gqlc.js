@@ -18,6 +18,7 @@ function extractDefinitions(graphqlString) {
       valueNames: ['between', 'left', 'match', 'right']
     }));
 
+  /** @type {string[]} */
   let definitions = [];
 
   for(let i = 0; i < mr.length; ++i) {
