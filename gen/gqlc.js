@@ -3,13 +3,13 @@
 const path = require('path');
 const fs = require('mz/fs');
 
-const XRegExp = require('xregexp');
+const xRegExp = require('xregexp');
 const gql = require('graphql-tag');
 
 const utils = require('./utils');
 
 function extractDefinitions(graphqlString) {
-  const mr = XRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
+  const mr = xRegExp.matchRecursive(graphqlString, '{', '}', 'g', {
     valueNames: ['between', 'left', 'match', 'right']
   });
 

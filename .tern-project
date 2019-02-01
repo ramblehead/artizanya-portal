@@ -2,10 +2,13 @@
   "dependencyBudget": 20000000,
   "libs": [
     "browser",
-    "react"
+    "react",
+    "underscore"
   ],
   "plugins": {
     "es_modules": {},
-    "node": {}
+    "node": {},
+    "commonjs": {},
+    "node_resolve": {}
   }
 }
