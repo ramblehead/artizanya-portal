@@ -104,6 +104,11 @@ function filterFragments(definitions) {
     }, {});
 }
 
+/**
+ * Fliter GraphQL operations (query, mutation) from GraphQL definitions
+ * @param {GraphqlOperationDesc[]} operations
+ * @param {Record<string, string>} fragments
+ */
 function makeGqlStrings(operations, fragments) {
   return operations.map(operation => {
     let gqlString = operation.definition + '\n';
@@ -117,6 +122,10 @@ function makeGqlStrings(operations, fragments) {
   });
 }
 
+/**
+ * Make GraphQL objects from GraphQL strings
+ * @param {{name: string, value: string}[]} gqlStrings
+ */
 function makeGqlObjects(gqlStrings) {
   return gqlStrings.map(gqlString => ({
     name: gqlString.name,
