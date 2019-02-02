@@ -69,8 +69,9 @@ function filterOperations(definitions) {
 }
 
 /**
- * Fliter GraphQL operations (query, mutation) from GraphQL definitions
+ * Find fragments used in GraphQL operation
  * @param {string} operation
+ * @return {string[]} - list of used fragment names
  */
 function findFragmentNames(operation) {
   let result = [];
