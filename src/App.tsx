@@ -7,8 +7,6 @@ import { Component } from 'react';
 import { Query, QueryResult } from 'react-apollo';
 
 // import { loader } from 'graphql.macro';
-// console.log(gqlLoader);
-
 // const getElementGql = loader('./graphql/land/GetElement.graphql');
 // console.log(getElementGqlX);
 

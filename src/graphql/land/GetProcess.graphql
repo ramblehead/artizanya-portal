@@ -1,0 +1,19 @@
+# Hey Emacs, this is -*- coding: utf-8 -*-
+
+query GetProcess($id: String!) {
+  process(id: $id) {
+    collection
+    id
+    name
+    inComponents {
+      collection
+      id
+      name
+    }
+    outComponents {
+      collection
+      id
+      name
+    }
+  }
+}
