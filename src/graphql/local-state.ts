@@ -3,6 +3,8 @@
 // /b/{  Local GraphQL Custom Scalars
 
 // import { GraphQLScalarType, ValueNode } from 'graphql';
+// import gql from 'graphql-tag';
+// import { gql } from 'graphql.macro';
 
 export type IntOrString = number | string;
 

@@ -4,13 +4,22 @@ const path = require('path');
 const fs = require('mz/fs');
 
 const xRegExp = require('xregexp');
-const gql = require('graphql-tag');
+
+// const gql = /** @type {import('graphql-tag').default} */(
+//   /** @type {unknown} */(
+//     require('graphql-tag')));
+
+const gql = /** @type {import('graphql-tag').default} */(
+  /** @type {unknown} */(require('graphql-tag')));
 
 const utils = require('./utils');
 
 /**
  * Extracts GraphQL definitions (query, mutation, fragment etc.)
- * @param {string} graphqlString
+ *
+ * @param {string} graphqlString - Usually, a full GraphQL file as a string
+ * @return {string[]} - List of strings containing GraphQL definitions
+ *   (such as query, fragment, mutation etc.)
  */
 function extractDefinitions(graphqlString) {
   const mr = /** @type {xRegExp.MatchRecursiveResult[]} */ (
@@ -44,8 +53,12 @@ function extractDefinitions(graphqlString) {
  */
 
 /**
- * Fliter GraphQL operations (query, mutation) from GraphQL definitions
- * @param {string[]} definitions
+ * Fliter GraphQL operations from GraphQL definitions
+ *
+ * At the moment only query and mutation are supported.
+ *
+ * @param {string[]} definitions - strings with GraphQL operation definitions
+ * @return {GraphqlOperationDesc[]} - GraphQL operation descriptions
  */
 function filterOperations(definitions) {
   return definitions.reduce(
@@ -70,6 +83,7 @@ function filterOperations(definitions) {
 
 /**
  * Find fragments used in GraphQL operation
+ *
  * @param {string} operation
  * @return {string[]} - list of used fragment names
  */
@@ -86,7 +100,9 @@ function findFragmentNames(operation) {
 
 /**
  * Fliter GraphQL operations (query, mutation) from GraphQL definitions
- * @param {string[]} definitions
+ *
+ * @param {string[]} definitions - strings with GraphQL operation definitions
+ * @return {Record<string, string>} - key is fragment name, value is the operation
  */
 function filterFragments(definitions) {
   return definitions.reduce(

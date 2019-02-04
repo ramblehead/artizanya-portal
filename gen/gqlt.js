@@ -32,11 +32,12 @@ function generateTypesForDir(
 }
 
 /**
- * Generate TypeScript types file for GraphQL queries file.
- * @param {string} graphqlFilePath - GraphQL queries file path.
- * @param {string} remoteSchemaPath - Remote schema file path.
- * @param {string} localSchemaPath - Local schema file path.
- * @param {string} apolloPath - Path to apollo executable.
+ * Generate TypeScript types file for GraphQL queries file
+ *
+ * @param {string} graphqlFilePath - GraphQL queries file path
+ * @param {string} remoteSchemaPath - Remote schema file path
+ * @param {string} localSchemaPath - Local schema file path
+ * @param {string} apolloPath - Path to apollo executable
  */
 function generateTypesForFile(
   graphqlFilePath, remoteSchemaPath, localSchemaPath, apolloPath)
