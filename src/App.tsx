@@ -6,9 +6,8 @@ import * as React from 'react';
 import { Component } from 'react';
 import { Query, QueryResult } from 'react-apollo';
 
-// import { loader } from 'graphql.macro';
-// const getElementGql = loader('./graphql/land/GetElement.graphql');
-// console.log(getElementGqlX);
+// import { loader as gqlLoader } from 'graphql.macro';
+// const getElementGql = gqlLoader('./graphql/land/GetElement.graphql');
 
 // import { getElementGql } from './graphql/land';
 // import { GetElement,
@@ -17,7 +16,6 @@ import { Query, QueryResult } from 'react-apollo';
 import { getElementGql } from './graphql/land';
 import { GetElement,
          GetElementVariables } from './graphql/land-types';
-
 
 import { getExpandedNodesGql,
          getSelectedRadioButtonGql } from './graphql/local';

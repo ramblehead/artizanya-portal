@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "maxNodeModuleJsDepth": 10,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "noEmit": true,
+    "jsx": "react",
+    "lib": ["es2017"],
+    "moduleResolution": "node",
+    "newLine": "lf"
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true
+    "noImplicitAny": true,
+  }
+}
