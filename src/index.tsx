@@ -5,7 +5,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { resolvers as localResolvers,
          defaults as localDefaults,
-         schema as localTypeDefs } from './graphql/local-state';
+         schema as localTypeDefs } from './graphql/local/state';
 
 import './index.css';
 

@@ -13,18 +13,19 @@ import { Query, QueryResult } from 'react-apollo';
 // import { GetElement,
 //          GetElementVariables } from './graphql/land-types';
 
-import { getElementGql } from './graphql/land';
+import { gqlGetElementGql } from './graphql/land';
 import { GetElement,
-         GetElementVariables } from './graphql/land-types';
+         GetElementVariables } from './graphql/land/GetElement';
 
-import { getExpandedNodesGql,
-         getSelectedRadioButtonGql } from './graphql/local';
-import { GetExpandedNodes,
-         GetSelectedRadioButton } from './graphql/local-types';
+import { gqlGetExpandedNodes } from './graphql/local';
+import { GetExpandedNodes } from './graphql/local/GetExpandedNodes';
 
-import { getProcessGql } from './graphql/land';
+import { gqlGetSelectedRadioButton } from './graphql/local';
+import { GetSelectedRadioButton } from './graphql/local/GetSelectedRadioButton';
+
+import { gqlGetProcessGql } from './graphql/land';
 import { GetProcess,
-         GetProcessVariables } from './graphql/land-types';
+         GetProcessVariables } from './graphql/land/GetProcess';
 
 import * as rst from 'react-sortable-tree';
 
@@ -241,7 +242,7 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
 
   renderProcessQuery(processQueryResult: QueryResult) {
     return (
-      <ExpandedNodesQuery query={getExpandedNodesGql}>
+      <ExpandedNodesQuery query={gqlGetExpandedNodes}>
         {(getExpandedNodesResult) => {
            // debugger;
            return this.renderExpandedNodesQuery(
@@ -253,7 +254,7 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
 
   render() {
     return (
-      <ProcessQuery query={getProcessGql} variables={{ id: this.props.id }}>
+      <ProcessQuery query={gqlGetProcessGql} variables={{ id: this.props.id }}>
         {(processQueryResult) => {
            return this.renderProcessQuery(processQueryResult);
         }}
@@ -269,7 +270,7 @@ class ProcessTree extends Component<GetProcessVariables, TreeState> {
 class ElementQuery extends Query<GetElement, GetElementVariables> {}
 
 const ElementX = ({ id }: GetElementVariables) => (
-  <ElementQuery query={getElementGql} variables={{ id }}>
+  <ElementQuery query={gqlGetElementGql} variables={{ id }}>
     {({ loading, error, data }) => {
        if (loading) { return <div>Loading</div>; }
        if (error) { return <div>Error</div>; }
@@ -291,7 +292,7 @@ class ElementY extends Component<GetElementVariables, {}> {
 
   render() {
     return (
-      <ElementQuery query={getElementGql} variables={{ id: this.props.id }}>
+      <ElementQuery query={gqlGetElementGql} variables={{ id: this.props.id }}>
         {({ loading, error, data }) => {
            if (loading) { return <div>Loading</div>; }
            if (error) { return <div>Error</div>; }
@@ -321,7 +322,7 @@ class RadioButtons extends Component {
 
   render() {
     return (
-      <SelectedRadioButtonQuery query={getSelectedRadioButtonGql}>
+      <SelectedRadioButtonQuery query={gqlGetSelectedRadioButton}>
         {({ loading, error, data, client }) => {
            if (loading) { return <div>Loading</div>; }
            if (error) { return <div>Error</div>; }
@@ -369,7 +370,7 @@ class SelectedButtonIndicator extends Component {
 
   render() {
     return (
-      <SelectedRadioButtonQuery query={getSelectedRadioButtonGql}>
+      <SelectedRadioButtonQuery query={gqlGetSelectedRadioButton}>
         {({ loading, error, data }) => {
            data = data as GetSelectedRadioButton;
            return (

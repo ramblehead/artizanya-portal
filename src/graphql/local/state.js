@@ -6,7 +6,7 @@
 // import gql from 'graphql-tag';
 // import { gql } from 'graphql.macro';
 
-export type IntOrString = number | string;
+// export type IntOrString = number | string;
 
 // const intOrStringTypeConditioner =
 //   (value: string | number) => {
@@ -51,6 +51,8 @@ export type IntOrString = number | string;
 
 // /b/{ Local GraphQL Schema and Defaults
 
+// const schema = gqlLoader('./local-state.graphql');
+
 const schema = `
 type ProcessTreeItemLocalState {
   path: [String!]!
@@ -63,6 +65,9 @@ extend type Query {
 }
 `;
 
+const resolvers = {
+};
+
 const defaults = {
   treeItem: {
     __typename: 'ProcessTreeItemLocalState',
@@ -70,9 +75,6 @@ const defaults = {
     expanded: false
   },
   selectedRadioButton: 1
-};
-
-const resolvers = {
 };
 
 export {
