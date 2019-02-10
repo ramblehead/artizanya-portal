@@ -6,13 +6,6 @@ import * as React from 'react';
 import { Component } from 'react';
 import { Query, QueryResult } from 'react-apollo';
 
-// import { loader as gqlLoader } from 'graphql.macro';
-// const getElementGql = gqlLoader('./graphql/land/GetElement.graphql');
-
-// import { getElementGql } from './graphql/land';
-// import { GetElement,
-//          GetElementVariables } from './graphql/land-types';
-
 import { gqlGetElementGql } from './graphql/land';
 import { GetElement,
          GetElementVariables } from './graphql/land/GetElement';

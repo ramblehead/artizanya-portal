@@ -2,10 +2,5 @@
 
 import { loader as gqlLoader } from 'graphql.macro';
 
-const gqlGetElementGql = gqlLoader('./GetElement.graphql');
-const gqlGetProcessGql = gqlLoader('./GetProcess.graphql');
-
-export {
-  gqlGetElementGql,
-  gqlGetProcessGql
-};
+export const gqlGetElementGql = gqlLoader('./GetElement.graphql');
+export const gqlGetProcessGql = gqlLoader('./GetProcess.graphql');
