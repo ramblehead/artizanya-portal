@@ -16,7 +16,8 @@
           ((or (string-match-p "^#!.*node" (save-excursion
                                              (goto-char (point-min))
                                              (thing-at-point 'line t)))
-               (setq ext-js (string-match-p "\\.js\\'" file-rpath)))
+               (setq ext-js (string-match-p "\\.js\\'"
+                                            file-rpath)))
            ;; tsserver requires non-.ts files to be manually added to the files
            ;; array in tsconfig.json, otherwise the file will be loaded as part
            ;; of an 'inferred project'. This won't be necessary anymore after
@@ -25,4 +26,6 @@
            (unless ext-js (setq tide-require-manual-setup t))
            (setq rh-js2-additional-externs
                  (append rh-js2-additional-externs '("require" "exports")))
+           (rh-setup-javascript-tern-tide))
+          ((string-match-p "\\.jsx\\'" file-rpath)
            (rh-setup-javascript-tern-tide)))))
