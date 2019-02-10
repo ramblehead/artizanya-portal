@@ -42,7 +42,7 @@ function generateTypesForDir(
 function generateTypesForFile(
   graphqlFilePath, remoteSchemaPath, localSchemaPath, apolloPath)
 {
-  const outFilePath = graphqlFilePath.replace(/(\.graphql)$/, '-types.ts');
+  const outFilePath = graphqlFilePath.replace(/(\.graphql)$/, '.ts');
   const includesGlob = '{' + graphqlFilePath + ',' + localSchemaPath + '}';
   console.log(path.resolve(outFilePath));
   // see https://github.com/fenech/apollo-cli-example
